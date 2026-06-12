@@ -1,0 +1,26 @@
+# .gitignore — racine du mono-repo MDD
+# back/ et front/ ont déjà leurs propres .gitignore pour leurs sous-arbres
+# (target/, node_modules/, dist/, etc.). Ce fichier ne couvre que la RACINE
+# et les artefacts transverses.
+
+# === IDE : IntelliJ IDEA ===
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# === IDE : VS Code (racine) ===
+.vscode/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Claude Code ===
+# Les skills (.claude/skills/) ET les réglages partagés (.claude/settings.json)
+# SONT versionnés. On n'ignore que les réglages locaux/personnels.
+.claude/settings.local.json
+
+# === Divers ===
+*.log
