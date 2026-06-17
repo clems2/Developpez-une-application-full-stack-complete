@@ -9,8 +9,14 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      # validate : Hibernate ne crée/ne modifie plus le schéma. C'est Flyway qui
+      # le construit (db/migration). Au démarrage, Hibernate vérifie seulement que
+      # les entités correspondent au schéma migré et plante sinon (garde-fou).
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+  flyway:
+    # Actif par défaut en dev/prod ; exécute db/migration au démarrage.
+    enabled: true

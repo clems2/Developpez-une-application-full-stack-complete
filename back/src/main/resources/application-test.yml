@@ -6,7 +6,13 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
+      # En test, c'est Hibernate qui génère le schéma depuis les entités (rapide,
+      # pas de dépendance externe). Le schéma de test reste donc ancré aux entités.
       ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
+  flyway:
+    # Désactivé en test : on ne rejoue pas les migrations MySQL sur H2 (option 1).
+    # Hibernate (create-drop) fait foi pour le schéma de test.
+    enabled: false
