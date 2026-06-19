@@ -18,7 +18,7 @@ import lombok.Setter;
  * User, lors de la mise en place des autres endpoints.
  */
 @Entity
-@Table(name = "topic")
+@Table(name = "topics")
 @Getter
 @Setter
 @NoArgsConstructor
