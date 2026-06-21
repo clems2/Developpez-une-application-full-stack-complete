@@ -3,6 +3,8 @@
 # (target/, node_modules/, dist/, etc.). Ce fichier ne couvre que la RACINE
 # et les artefacts transverses.
 
+# === VSCode ===
+.vscode/
 # === IDE : IntelliJ IDEA ===
 .idea/
 *.iml
@@ -24,3 +26,4 @@ desktop.ini
 
 # === Divers ===
 *.log
+

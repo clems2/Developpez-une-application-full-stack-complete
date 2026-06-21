@@ -16,3 +16,7 @@ spring:
     # Désactivé en test : on ne rejoue pas les migrations MySQL sur H2 (option 1).
     # Hibernate (create-drop) fait foi pour le schéma de test.
     enabled: false
+app:
+  jwt:
+    secret: test-secret-key-for-junit-only-do-not-use-in-prod-0123456789
+    expiration-ms: 3600000
