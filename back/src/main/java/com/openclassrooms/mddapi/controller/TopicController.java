@@ -7,7 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.openclassrooms.mddapi.service.SubscriptionService;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -19,7 +23,7 @@ import java.util.List;
 public class TopicController {
 
     private final TopicService topicService;
-
+    private final SubscriptionService subscriptionService;
     /**
      * Retourne la liste de tous les sujets.
      *
@@ -28,5 +32,31 @@ public class TopicController {
     @GetMapping
     public ResponseEntity<List<TopicDto>> getAllTopics() {
         return ResponseEntity.ok(topicService.findAll());
+    }
+
+    /**
+     * Abonne l'utilisateur courant au sujet. Idempotent.
+     *
+     * @param id        identifiant du sujet
+     * @param principal utilisateur authentifié
+     * @return 200 OK
+     */
+    @PostMapping("/{id}/subscribe")
+    public ResponseEntity<Void> subscribe(@PathVariable Long id, Principal principal) {
+        subscriptionService.subscribe(principal.getName(), id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Désabonne l'utilisateur courant du sujet. Idempotent.
+     *
+     * @param id        identifiant du sujet
+     * @param principal utilisateur authentifié
+     * @return 200 OK
+     */
+    @DeleteMapping("/{id}/subscribe")
+    public ResponseEntity<Void> unsubscribe(@PathVariable Long id, Principal principal) {
+        subscriptionService.unsubscribe(principal.getName(), id);
+        return ResponseEntity.ok().build();
     }
 }
