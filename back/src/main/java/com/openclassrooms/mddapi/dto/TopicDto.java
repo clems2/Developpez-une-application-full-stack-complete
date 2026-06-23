@@ -1,8 +1,11 @@
 package com.openclassrooms.mddapi.dto;
 
 /**
- * Représentation d'un sujet exposée et envoyé par l'API.
+ * Représentation d'un sujet exposée par l'API.
+ *
+ * Le champ subscribed indique si l'utilisateur courantest abonné à ce sujet.
+ * Étant par-utilisateur, il n'est pas issu de l'entité Topic : il est calculé et injecté
+ * par le service (le mapper, qui ne connaît pas l'utilisateur courant, ne le renseigne pas).
  */
-public record TopicDto(Long id, String title, String description) {
-//TODO Le champ subscribed (l'utilisateur courant est-il abonné ?) sera ajouté avec l'authentification, car il dépend de l'utilisateur connecté.
+public record TopicDto(Long id, String title, String description, boolean subscribed) {
 }

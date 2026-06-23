@@ -24,14 +24,16 @@ public class TopicController {
 
     private final TopicService topicService;
     private final SubscriptionService subscriptionService;
+    
     /**
-     * Retourne la liste de tous les sujets.
+     * Liste tous les sujets avec, pour chacun, l'état d'abonnement de l'utilisateur courant.
      *
-     * @return 200 OK avec la liste des sujets
+     * @param principal utilisateur authentifié
+     * @return la liste des sujets
      */
     @GetMapping
-    public ResponseEntity<List<TopicDto>> getAllTopics() {
-        return ResponseEntity.ok(topicService.findAll());
+    public ResponseEntity<List<TopicDto>> getAllTopics(Principal principal) {
+        return ResponseEntity.ok(topicService.getAllTopics(principal.getName()));
     }
 
     /**
@@ -47,6 +49,7 @@ public class TopicController {
         return ResponseEntity.ok().build();
     }
 
+    
     /**
      * Désabonne l'utilisateur courant du sujet. Idempotent.
      *

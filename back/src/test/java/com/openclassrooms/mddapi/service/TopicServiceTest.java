@@ -1,23 +1,26 @@
 package com.openclassrooms.mddapi.service;
 
 import com.openclassrooms.mddapi.dto.TopicDto;
-import com.openclassrooms.mddapi.mapper.TopicMapper;
+import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
 import com.openclassrooms.mddapi.models.Topic;
+import com.openclassrooms.mddapi.models.User;
+import com.openclassrooms.mddapi.repository.SubscriptionRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
+import com.openclassrooms.mddapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-/**
- * Tests unitaires du TopicService : logique de délégation au repository
- * et au mapper, sans contexte Spring (Mockito pur).
- */
 @ExtendWith(MockitoExtension.class)
 class TopicServiceTest {
 
@@ -25,45 +28,79 @@ class TopicServiceTest {
     private TopicRepository topicRepository;
 
     @Mock
-    private TopicMapper topicMapper;
+    private SubscriptionRepository subscriptionRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private TopicService topicService;
 
     @Test
-    void findAll_shouldReturnMappedTopics() {
-        // Given : le repository renvoie deux entités, le mapper les convertit
-        List<Topic> entities = List.of(
-                new Topic("Java", "Langage orienté objet sur la JVM"),
-                new Topic("Angular", "Framework front-end TypeScript"));
-        List<TopicDto> dtos = List.of(
-                new TopicDto(1L, "Java", "Langage orienté objet sur la JVM"),
-                new TopicDto(2L, "Angular", "Framework front-end TypeScript"));
-        when(topicRepository.findAll()).thenReturn(entities);
-        when(topicMapper.toDto(entities)).thenReturn(dtos);
+    void getAllTopics_shouldFlagSubscribedTopics() {
+        // Given : un utilisateur abonné au topic 1 uniquement
+        User user = buildUser(10L, "leo");
+        Topic java = buildTopic(1L, "Java", "Langage JVM");
+        Topic angular = buildTopic(2L, "Angular", "Framework front-end");
+
+        when(userRepository.findByUsername("leo")).thenReturn(Optional.of(user));
+        when(subscriptionRepository.findSubscribedTopicIds(10L)).thenReturn(Set.of(1L));
+        when(topicRepository.findAll()).thenReturn(List.of(java, angular));
 
         // When
-        List<TopicDto> result = topicService.findAll();
+        List<TopicDto> result = topicService.getAllTopics("leo");
 
-        // Then : on retourne bien le résultat mappé, dans l'ordre
+        // Then : Java abonné, Angular non
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(TopicDto::title).containsExactly("Java", "Angular");
-        verify(topicRepository).findAll();
-        verify(topicMapper).toDto(entities);
+        assertThat(result).anySatisfy(dto -> {
+            assertThat(dto.title()).isEqualTo("Java");
+            assertThat(dto.subscribed()).isTrue();
+        });
+        assertThat(result).anySatisfy(dto -> {
+            assertThat(dto.title()).isEqualTo("Angular");
+            assertThat(dto.subscribed()).isFalse();
+        });
     }
 
     @Test
-    void findAll_shouldReturnEmptyListWhenNoTopic() {
-        // Given : aucune donnée. Cas limite : on vérifie qu'on ne crashe pas
-        // et qu'on renvoie une liste vide plutôt que null.
-        when(topicRepository.findAll()).thenReturn(List.of());
-        when(topicMapper.toDto(List.<Topic>of())).thenReturn(List.of());
+    void getAllTopics_shouldReturnAllFalse_whenNoSubscription() {
+        // Given : aucun abonnement
+        User user = buildUser(10L, "leo");
+        Topic java = buildTopic(1L, "Java", "Langage JVM");
+
+        when(userRepository.findByUsername("leo")).thenReturn(Optional.of(user));
+        when(subscriptionRepository.findSubscribedTopicIds(10L)).thenReturn(Set.of());
+        when(topicRepository.findAll()).thenReturn(List.of(java));
 
         // When
-        List<TopicDto> result = topicService.findAll();
+        List<TopicDto> result = topicService.getAllTopics("leo");
 
         // Then
-        assertThat(result).isEmpty();
-        verify(topicMapper).toDto(List.<Topic>of());
+        assertThat(result).singleElement()
+                .satisfies(dto -> assertThat(dto.subscribed()).isFalse());
+    }
+
+    @Test
+    void getAllTopics_shouldThrow_whenUserUnknown() {
+        // Given : l'utilisateur courant n'existe pas
+        when(userRepository.findByUsername("ghost")).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> topicService.getAllTopics("ghost"))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    /** Construit un User avec un id (l'id n'a pas de setter public via constructeur métier). */
+    private User buildUser(Long id, String username) {
+        User user = new User(username, username + "@mdd.io", "hashed");
+        user.setId(id);
+        return user;
+    }
+
+    /** Construit un Topic avec un id positionné. */
+    private Topic buildTopic(Long id, String title, String description) {
+        Topic topic = new Topic(title, description);
+        topic.setId(id);
+        return topic;
     }
 }
