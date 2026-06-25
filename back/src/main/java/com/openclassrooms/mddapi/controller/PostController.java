@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.controller;
 
 import com.openclassrooms.mddapi.dto.CreatePostRequest;
+import com.openclassrooms.mddapi.dto.PostDetailDto;
 import com.openclassrooms.mddapi.dto.PostDto;
 import com.openclassrooms.mddapi.service.PostService;
 import jakarta.validation.Valid;
@@ -41,13 +42,13 @@ public class PostController {
     }
 
     /**
-     * Détail d'un article.
+     * Détail d'un article avec ses commentaires.
      *
      * @param id identifiant de l'article
-     * @return 200 OK avec l'article
+     * @return 200 avec le détail de l'article
      */
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.getById(id));
+    public ResponseEntity<PostDetailDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.getPostDetail(id));
     }
 }
