@@ -11,16 +11,21 @@ import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,6 +108,42 @@ class PostServiceTest {
         // When / Then
         assertThatThrownBy(() -> postService.getById(999L))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void getFeed_shouldUseDescendingByDefault() {
+        when(postRepository.findFeedForUser(eq("leo"), any(Sort.class))).thenReturn(List.of());
+
+        postService.getFeed("leo", "desc");
+
+        ArgumentCaptor<Sort> captor = ArgumentCaptor.forClass(Sort.class);
+        verify(postRepository).findFeedForUser(eq("leo"), captor.capture());
+        assertThat(captor.getValue().getOrderFor("createdAt").getDirection())
+                .isEqualTo(Sort.Direction.DESC);
+    }
+
+    @Test
+    void getFeed_shouldUseAscendingWhenRequested() {
+        when(postRepository.findFeedForUser(eq("leo"), any(Sort.class))).thenReturn(List.of());
+
+        postService.getFeed("leo", "asc");
+
+        ArgumentCaptor<Sort> captor = ArgumentCaptor.forClass(Sort.class);
+        verify(postRepository).findFeedForUser(eq("leo"), captor.capture());
+        assertThat(captor.getValue().getOrderFor("createdAt").getDirection())
+                .isEqualTo(Sort.Direction.ASC);
+    }
+
+    @Test
+    void getFeed_shouldFallBackToDescendingOnUnknownOrder() {
+        when(postRepository.findFeedForUser(eq("leo"), any(Sort.class))).thenReturn(List.of());
+
+        postService.getFeed("leo", "n'importe quoi");
+
+        ArgumentCaptor<Sort> captor = ArgumentCaptor.forClass(Sort.class);
+        verify(postRepository).findFeedForUser(eq("leo"), captor.capture());
+        assertThat(captor.getValue().getOrderFor("createdAt").getDirection())
+                .isEqualTo(Sort.Direction.DESC);
     }
 
     private User buildUser(Long id, String username) {

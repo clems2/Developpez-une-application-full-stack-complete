@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,6 +91,27 @@ public class PostService {
         );
     }
     
+    /**
+     * Fil d'actualité de l'utilisateur : articles des sujets auxquels il est abonné,
+     * triés par date. Le sens de tri est piloté par order (défaut décroissant) ;
+     * toute valeur autre que "asc" retombe sur décroissant.
+     *
+     * @param username username de l'utilisateur authentifié
+     * @param order    {@code "asc"} ou {@code "desc"} (défaut)
+     * @return les articles du fil en DTO, triés
+     */
+    @Transactional(readOnly = true)
+    public List<PostDto> getFeed(String username, String order) {
+        Sort.Direction direction = "asc".equalsIgnoreCase(order)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "createdAt");
+
+        return postRepository.findFeedForUser(username, sort)
+                .stream()
+                .map(this::toDto) 
+                .toList();
+    }
     /** Construit le DTO d'un article (forme plate auteur/sujet). */
     private PostDto toDto(Post post) {
         return new PostDto(
