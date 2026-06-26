@@ -50,6 +50,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse("Données invalides", errors));
     }
 
+    /** Requête métier invalide → 400. */
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
     /**
      * Filet de sécurité pour toute exception non gérée → 500. On logge le détail
      * côté serveur mais on ne l'expose jamais au client (pas de fuite d'info).

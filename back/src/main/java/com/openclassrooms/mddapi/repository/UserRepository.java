@@ -21,4 +21,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /** Indique si un compte existe déjà pour ce nom d'utilisateur. */
     boolean existsByUsername(String username);
+
+    /**
+     * Indique si un autre compte (id différent) utilise déjà ce username.
+     * Sert à vérifier l'unicité lors d'une mise à jour, en s'excluant soi-même.
+     */
+    boolean existsByUsernameAndIdNot(String username, Long id);
+
+    /**
+     * Indique si un autre compte (id différent) utilise déjà cet email.
+     */
+    boolean existsByEmailAndIdNot(String email, Long id);
 }
