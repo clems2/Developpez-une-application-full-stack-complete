@@ -1,5 +1,7 @@
 package com.openclassrooms.mddapi.dto;
 
+import com.openclassrooms.mddapi.security.PasswordPolicy;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -24,9 +26,8 @@ public record RegisterRequest(
 
         @NotBlank(message = "Le mot de passe est obligatoire")
         @Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).{8,}$",
-                message = "Le mot de passe doit contenir au moins 8 caractères, "
-                        + "une minuscule, une majuscule, un chiffre et un caractère spécial")
+                regexp = PasswordPolicy.REGEX,
+                message = PasswordPolicy.MESSAGE)
         String password
 
 ) {
