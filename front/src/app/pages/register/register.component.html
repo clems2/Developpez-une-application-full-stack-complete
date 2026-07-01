@@ -1,0 +1,53 @@
+@if (vm(); as v) {
+  <mat-card class="auth-card">
+    <a mat-button routerLink="/" class="auth-back" aria-label="Retour à l'accueil">←</a>
+    <h1 class="auth-title">Inscription</h1>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom d'utilisateur</mat-label>
+        <input matInput formControlName="username" autocomplete="username" />
+        @if (form.controls.username.touched && form.controls.username.hasError('required')) {
+          <mat-error>Le nom d'utilisateur est obligatoire.</mat-error>
+        }
+        @if (form.controls.username.hasError('minlength')) {
+          <mat-error>Au moins 3 caractères.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Adresse e-mail</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="email" />
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <mat-error>L'email est obligatoire.</mat-error>
+        }
+        @if (form.controls.email.hasError('email')) {
+          <mat-error>Format d'email invalide.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="new-password" />
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <mat-error>Le mot de passe est obligatoire.</mat-error>
+        }
+        @if (form.controls.password.hasError('pattern')) {
+          <mat-error>{{ passwordPolicyMessage }}</mat-error>
+        }
+      </mat-form-field>
+
+      @if (v.isError) {
+        <p class="auth-error" role="alert">{{ v.error }}</p>
+      }
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="v.isLoading">
+        {{ v.isLoading ? "Création…" : "S'inscrire" }}
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      Déjà un compte ? <a routerLink="/login">Se connecter</a>
+    </p>
+  </mat-card>
+}

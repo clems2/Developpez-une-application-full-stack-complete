@@ -4,13 +4,14 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { routes } from './app.routes';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    // L'intercepteur JWT (fonctionnel) sera ajouté dans ce tableau à l'étape 6
-    provideHttpClient(withInterceptors([])),
+    // L'intercepteur JWT (fonctionnel) sera ajouté dans ce tableau
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
   ],
 };

@@ -1,0 +1,47 @@
+/* auth-card : colonne centrée, largeur fluide bornée → responsive desktop/tablette/mobile */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.auth-back {
+  min-width: 0;
+  padding: 0 0.5rem;
+}
+
+.auth-title {
+  text-align: center;
+  margin: 0.5rem 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.auth-error {
+  color: var(--mat-sys-error, #b3261e);
+  margin: 0 0 0.5rem;
+}
+
+.auth-switch {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Mobile : la carte occupe l'écran avec de fines marges, sans coller aux bords */
+@media (max-width: 480px) {
+  .auth-card {
+    max-width: none;
+    margin: 1rem;
+    padding: 1rem;
+  }
+}

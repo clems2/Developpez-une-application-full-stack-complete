@@ -1,0 +1,34 @@
+/* Accueil : logo + actions centrés verticalement et horizontalement */
+.home {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.home__logo {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #6c5ce7;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* Desktop/tablette : boutons côte à côte */
+.home__actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Mobile : boutons empilés, pleine largeur contenue (conforme maquette mobile) */
+@media (max-width: 480px) {
+  .home__actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 260px;
+  }
+}

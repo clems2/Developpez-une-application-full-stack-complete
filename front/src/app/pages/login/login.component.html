@@ -1,0 +1,36 @@
+@if (vm(); as v) {
+  <mat-card class="auth-card">
+    <a mat-button routerLink="/" class="auth-back" aria-label="Retour à l'accueil">←</a>
+    <h1 class="auth-title">Se connecter</h1>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>E-mail ou nom d'utilisateur</mat-label>
+        <input matInput formControlName="identifier" autocomplete="username" />
+        @if (form.controls.identifier.touched && form.controls.identifier.hasError('required')) {
+          <mat-error>L'identifiant est obligatoire.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="current-password" />
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <mat-error>Le mot de passe est obligatoire.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (v.isError) {
+        <p class="auth-error" role="alert">{{ v.error }}</p>
+      }
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="v.isLoading">
+        {{ v.isLoading ? 'Connexion…' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      Pas encore de compte ? <a routerLink="/register">Créer un compte</a>
+    </p>
+  </mat-card>
+}
