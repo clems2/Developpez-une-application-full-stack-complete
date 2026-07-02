@@ -1,0 +1,22 @@
+<header class="header">
+  <a class="header__brand" routerLink="/feed" (click)="closeMenu()">MDD</a>
+
+  <!-- Bouton burger : visible en mobile uniquement (CSS) -->
+  <button mat-icon-button class="header__burger" type="button"
+          [attr.aria-expanded]="menuOpen()" aria-label="Ouvrir le menu"
+          (click)="toggleMenu()">
+    <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
+  </button>
+
+  <!-- Navigation : en ligne sur desktop, panneau déroulant sur mobile -->
+  <nav class="header__nav" [class.header__nav--open]="menuOpen()">
+    @for (link of links(); track link.path) {
+      <a class="header__link" [routerLink]="link.path"
+         routerLinkActive="header__link--active" (click)="closeMenu()">{{ link.label }}</a>
+    }
+
+    <button mat-button class="header__logout" type="button" (click)="onLogout()">
+      Se déconnecter
+    </button>
+  </nav>
+</header>
