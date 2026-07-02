@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { TopicCardComponent } from '../../components/topic-card/topic-card.component';
 import { TopicsStore } from '../../store/topics.store';
-
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
 /**
  * Page (container) listant les sujets. Lit le view-model du store en signal
  * et délègue l'affichage de chaque sujet à `app-topic-card`.
@@ -14,13 +14,13 @@ import { TopicsStore } from '../../store/topics.store';
 @Component({
   selector: 'app-topics',
   standalone: true,
-  imports: [TopicCardComponent],
+  imports: [TopicCardComponent, SpinnerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (vm(); as v) {
       @switch (v.status) {
         @case ('loading') {
-          <p>Chargement des sujets…</p>
+          <app-spinner [label]="'Chargement des sujets…'" />
         }
         @case ('error') {
           <p>Une erreur est survenue lors du chargement des sujets.</p>

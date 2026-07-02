@@ -1,0 +1,6 @@
+<div class="spinner" role="status" [attr.aria-label]="label() || 'Chargement en cours'">
+  <mat-progress-spinner mode="indeterminate" [diameter]="size()" />
+  @if (label()) {
+    <p class="spinner__label">{{ label() }}</p>
+  }
+</div>
