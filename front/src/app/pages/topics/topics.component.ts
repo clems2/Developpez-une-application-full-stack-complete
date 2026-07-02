@@ -31,7 +31,7 @@ import { SpinnerComponent } from '../../components/spinner/spinner.component';
           } @else {
             <section class="topics-list">
               @for (topic of v.topics; track topic.id) {
-                <app-topic-card [topic]="topic" />
+                <app-topic-card [topic]="topic" (subscribe)="onSubscribe($event)" />
               }
             </section>
           }
@@ -58,5 +58,10 @@ export class TopicsComponent implements OnInit {
   /** Déclenche le chargement des sujets à l'initialisation. */
   ngOnInit(): void {
     this.store.loadTopics();
+  }
+
+  /** Relaie l'intention d'abonnement d'une carte au store. */
+  onSubscribe(topicId: number): void {
+    this.store.subscribe(topicId);
   }
 }

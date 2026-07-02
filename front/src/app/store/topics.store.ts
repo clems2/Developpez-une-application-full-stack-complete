@@ -16,7 +16,7 @@ import { initialTopicsState, TopicsViewModel } from '../state/topics.state';
 /**
  * Feature store des sujets (NGRX Signal Store).
  *
- * orchestre ; l'appel HTTP est délégué au TopicService. La navigation et les effets de bord ne
+ * Orchestre ; l'appel HTTP est délégué au TopicService. La navigation et les effets de bord ne
  * vivent pas dans les `computed`.
  */
 export const TopicsStore = signalStore(
@@ -46,6 +46,29 @@ export const TopicsStore = signalStore(
               next: (topics: Topic[]) =>
                 patchState(store, { topics, status: 'loaded' }),
               error: () => patchState(store, { topics: [], status: 'error' }),
+            }),
+          ),
+        ),
+      ),
+    ),
+    /**
+     * Abonne l'utilisateur au sujet, puis passe son flag `subscribed` à true (après
+     * confirmation serveur — décision N=a). Idempotent côté back. Ne recharge pas toute
+     * la liste : mutation ciblée du seul sujet concerné.
+     * @param topicId identifiant du sujet à suivre
+     */
+    subscribe: rxMethod<number>(
+      pipe(
+        switchMap((topicId) =>
+          topicService.subscribe(topicId).pipe(
+            tapResponse({
+              next: () =>
+                patchState(store, {
+                  topics: store
+                    .topics()
+                    .map((t) => (t.id === topicId ? { ...t, subscribed: true } : t)),
+                }),
+              error: () => patchState(store, { status: 'error' }),
             }),
           ),
         ),

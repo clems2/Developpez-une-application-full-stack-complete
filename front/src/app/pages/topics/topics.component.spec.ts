@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
@@ -14,8 +14,8 @@ describe('TopicsComponent', () => {
   let httpMock: HttpTestingController;
 
   const mockTopics: Topic[] = [
-    { id: 1, title: 'Java', description: 'Langage JVM' },
-    { id: 2, title: 'Angular', description: 'Framework front' },
+    { id: 1, title: 'Java', description: 'Langage JVM', subscribed: false },
+    { id: 2, title: 'Angular', description: 'Framework front', subscribed: false },
   ];
 
   beforeEach(async () => {
