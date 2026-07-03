@@ -22,10 +22,11 @@ public class SecurityConfig {
 
     /**
      * Chaîne de sécurité stateless.
-     * CSRF désactivé (pas de cookie de session), sessions STATELESS, seuls /api/auth/** sont ouverts ;
-     * tout le reste exige un token valide. Le filtre JWT (bean Spring injecté) s'exécute avant le filtre
-     * d'authentification par formulaire. Une requête non authentifiée sur une
-     * route protégée est rejetée en 401 via JwtAuthenticationEntryPoint.
+     * CSRF désactivé (pas de cookie de session), sessions STATELESS. Sont ouverts sans token :
+     * les endpoints d'authentification (/api/auth/**) et la documentation OpenAPI/Swagger UI
+     * (/v3/api-docs/**, /swagger-ui/**) ; tout le reste exige un token valide. Le filtre JWT
+     * (bean Spring injecté) s'exécute avant le filtre d'authentification par formulaire. Une requête
+     * non authentifiée sur une route protégée est rejetée en 401 via JwtAuthenticationEntryPoint.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -38,6 +39,10 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -47,10 +52,10 @@ public class SecurityConfig {
      * Neutralise l'enregistrement automatique du filtre JWT dans la chaîne de
      * filtres du conteneur servlet.
      *
-     * Comme wtAuthenticationFilter est un @Component, Spring
+     * Comme JwtAuthenticationFilter est un @Component, Spring
      * Boot l'ajouterait par défaut à la chaîne servlet globale en plus
      * de la chaîne de sécurité, d'où une double exécution. On désactive cet
-     * enregistrement : le filtre ne vit que dans la SecurityFilterChain}.
+     * enregistrement : le filtre ne vit que dans la SecurityFilterChain.
      */
     @Bean
     public FilterRegistrationBean<JwtAuthenticationFilter> jwtFilterRegistration(
