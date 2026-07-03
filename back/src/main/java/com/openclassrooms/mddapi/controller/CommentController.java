@@ -2,7 +2,14 @@ package com.openclassrooms.mddapi.controller;
 
 import com.openclassrooms.mddapi.dto.CommentDto;
 import com.openclassrooms.mddapi.dto.CreateCommentRequest;
+import com.openclassrooms.mddapi.dto.ErrorResponse;
 import com.openclassrooms.mddapi.service.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.security.Principal;
 
 /**
@@ -21,6 +27,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/posts/{postId}/comments")
 @RequiredArgsConstructor
+@Tag(name = "Commentaires", description = "Ajout de commentaires sur un article")
 public class CommentController {
 
     private final CommentService commentService;
@@ -34,6 +41,14 @@ public class CommentController {
      * @param principal utilisateur authentifié
      * @return 201 avec le commentaire créé
      */
+    @Operation(summary = "Ajout d'un commentaire sur un article")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Commentaire créé"),
+            @ApiResponse(responseCode = "400", description = "Contenu du commentaire invalide",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Article introuvable",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
     @PostMapping
     public ResponseEntity<CommentDto> create(@PathVariable Long postId,
                                              @Valid @RequestBody CreateCommentRequest request,
