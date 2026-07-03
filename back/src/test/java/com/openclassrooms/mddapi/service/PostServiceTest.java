@@ -3,6 +3,7 @@ package com.openclassrooms.mddapi.service;
 import com.openclassrooms.mddapi.dto.CreatePostRequest;
 import com.openclassrooms.mddapi.dto.PostDto;
 import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
+import com.openclassrooms.mddapi.exception.SubscriptionRequiredException;
 import com.openclassrooms.mddapi.models.Post;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +42,9 @@ class PostServiceTest {
     @Mock
     private TopicRepository topicRepository;
 
+    @Mock
+    private SubscriptionService subscriptionService;
+
     @InjectMocks
     private PostService postService;
 
@@ -52,6 +57,7 @@ class PostServiceTest {
 
         when(userRepository.findByUsername("leo")).thenReturn(Optional.of(author));
         when(topicRepository.findById(1L)).thenReturn(Optional.of(topic));
+        when(subscriptionService.isSubscribed(10L, 1L)).thenReturn(true);
         when(postRepository.save(any(Post.class))).thenAnswer(invocation -> {
             Post p = invocation.getArgument(0);
             p.setId(99L);
@@ -81,6 +87,23 @@ class PostServiceTest {
         // When / Then
         assertThatThrownBy(() -> postService.create("leo", request))
                 .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void create_shouldThrow_whenNotSubscribed() {
+        // Given : utilisateur et sujet OK, mais non abonné
+        User author = buildUser(10L, "leo");
+        Topic topic = buildTopic(1L, "Java", "Langage JVM");
+        CreatePostRequest request = new CreatePostRequest(1L, "Mon titre", "Mon contenu");
+
+        when(userRepository.findByUsername("leo")).thenReturn(Optional.of(author));
+        when(topicRepository.findById(1L)).thenReturn(Optional.of(topic));
+        when(subscriptionService.isSubscribed(10L, 1L)).thenReturn(false);
+
+        // When / Then
+        assertThatThrownBy(() -> postService.create("leo", request))
+                .isInstanceOf(SubscriptionRequiredException.class);
+        verify(postRepository, never()).save(any());
     }
 
     @Test

@@ -61,6 +61,23 @@ public class SubscriptionService {
 
         subscriptionRepository.deleteByUserIdAndTopicId(user.getId(), topic.getId());
     }
+    
+    
+    /**
+     * Indique si un utilisateur est abonné à un sujet donné.
+     *
+     * Prend directement les identifiants (et non le username) : l'appelant a déjà
+     * résolu l'utilisateur et le sujet, on évite ainsi une résolution redondante.
+     * La connaissance « qui est abonné à quoi » reste encapsulée dans ce service.
+     *
+     * @param userId  identifiant de l'utilisateur
+     * @param topicId identifiant du sujet
+     * @return {@code true} si l'abonnement existe
+     */
+    @Transactional(readOnly = true)
+    public boolean isSubscribed(Long userId, Long topicId) {
+        return subscriptionRepository.existsByUserIdAndTopicId(userId, topicId);
+    }
 
     /** Résout l'utilisateur courant à partir de son nom d'utilisateur. */
     private User resolveUser(String username) {

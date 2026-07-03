@@ -5,6 +5,7 @@ import com.openclassrooms.mddapi.dto.CreatePostRequest;
 import com.openclassrooms.mddapi.dto.PostDetailDto;
 import com.openclassrooms.mddapi.dto.PostDto;
 import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
+import com.openclassrooms.mddapi.exception.SubscriptionRequiredException;
 import com.openclassrooms.mddapi.models.Post;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
@@ -31,6 +32,8 @@ public class PostService {
     private final TopicRepository topicRepository;
 
     private final CommentService commentService;
+    private final SubscriptionService subscriptionService;
+
 
 
     /**
@@ -47,7 +50,10 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
         Topic topic = topicRepository.findById(request.topicId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sujet introuvable"));
-
+        if (!subscriptionService.isSubscribed(author.getId(), topic.getId())) {
+            throw new SubscriptionRequiredException(
+                    "Publication impossible : vous n'êtes pas abonné à ce sujet");
+        }
         Post saved = postRepository.save(new Post(request.title(), request.content(), author, topic));
         return toDto(saved);
     }

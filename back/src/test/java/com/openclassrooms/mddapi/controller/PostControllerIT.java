@@ -3,9 +3,11 @@ package com.openclassrooms.mddapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.mddapi.dto.CreatePostRequest;
 import com.openclassrooms.mddapi.models.Post;
+import com.openclassrooms.mddapi.models.Subscription;
 import com.openclassrooms.mddapi.models.Topic;
 import com.openclassrooms.mddapi.models.User;
 import com.openclassrooms.mddapi.repository.PostRepository;
+import com.openclassrooms.mddapi.repository.SubscriptionRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Tests d'intégration des articles (bout en bout, H2, profil test).
- * Couvre création, validation, sujet inexistant, détail et accès non authentifié.
+ * Couvre création (abonné), refus si non abonné, validation, sujet inexistant,
+ * détail et accès non authentifié.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -50,6 +53,9 @@ class PostControllerIT {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
     private User author;
     private Topic topic;
 
@@ -57,6 +63,8 @@ class PostControllerIT {
     void setUp() {
         author = userRepository.save(new User("leo", "leo@mdd.io", "hashed"));
         topic = topicRepository.save(new Topic("Java", "Langage JVM"));
+        // Baseline : l'auteur est abonné au sujet de référence (publication autorisée).
+        subscriptionRepository.save(new Subscription(author, topic));
     }
 
     @Test
@@ -73,6 +81,19 @@ class PostControllerIT {
                 .andExpect(jsonPath("$.author").value("leo"))
                 .andExpect(jsonPath("$.topic").value("Java"))
                 .andExpect(jsonPath("$.createdAt").isNotEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = "leo")
+    void create_shouldReturn403_whenNotSubscribed() throws Exception {
+        // Sujet distinct auquel leo n'est pas abonné.
+        Topic other = topicRepository.save(new Topic("Angular", "Framework front"));
+        CreatePostRequest request = new CreatePostRequest(other.getId(), "Titre", "Contenu");
+
+        mockMvc.perform(post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden());
     }
 
     @Test

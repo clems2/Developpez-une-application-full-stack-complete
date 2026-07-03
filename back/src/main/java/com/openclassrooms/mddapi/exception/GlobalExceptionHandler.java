@@ -67,6 +67,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse("Une erreur interne est survenue"));
     }
 
+    /** Action réservée aux abonnés du sujet, utilisateur non abonné → 403. */
+    @ExceptionHandler(SubscriptionRequiredException.class)
+    public ResponseEntity<ErrorResponse> handleSubscriptionRequired(SubscriptionRequiredException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+    
     /** Ressource demandée introuvable → 404. */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
