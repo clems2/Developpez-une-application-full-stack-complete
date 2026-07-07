@@ -10,6 +10,7 @@ import { ArticleCardComponent } from '../../components/article-card/article-card
 import { SpinnerComponent } from '../../components/spinner/spinner.component';
 import { FeedStore } from '../../store/feed.store';
 import { FeedOrder } from '../../models/post.model';
+import { RouterLink } from '@angular/router';
 
 /**
  * Page (container) du fil d'actualité. Lit le view-model du FeedStore en signal, déclenche
@@ -19,17 +20,20 @@ import { FeedOrder } from '../../models/post.model';
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [ArticleCardComponent, SpinnerComponent, MatButtonModule, MatIconModule],
+  imports: [ArticleCardComponent, SpinnerComponent, MatButtonModule, MatIconModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (vm(); as v) {
       <div class="feed">
         <header class="feed__head">
           <h1 class="feed__title">Votre fil d'actualité</h1>
-          <button mat-stroked-button (click)="toggleOrder(v.order)">
-            <mat-icon>{{ v.order === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
-            Trier par date
-          </button>
+          <div class="feed__actions">
+            <a mat-flat-button color="primary" routerLink="/articles/new">Créer un article</a>
+            <button mat-stroked-button (click)="toggleOrder(v.order)">
+              <mat-icon>{{ v.order === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+              Trier par date
+            </button>
+          </div>
         </header>
 
         @switch (v.status) {
@@ -74,6 +78,10 @@ import { FeedOrder } from '../../models/post.model';
         display: flex;
         flex-direction: column;
         gap: 1rem;
+      }
+      .feed__actions {
+        display: flex;
+        gap: 0.75rem;
       }
       @media (max-width: 480px) {
         .feed__head {

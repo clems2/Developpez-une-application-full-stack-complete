@@ -48,6 +48,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/topics/topics.component').then((m) => m.TopicsComponent),
       },
+      {
+        path: 'articles/new',
+        loadComponent: () =>
+          import('./pages/article-create/article-create.component').then(
+            (m) => m.ArticleCreateComponent,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

@@ -1,0 +1,33 @@
+.article-form {
+  width: 100%;
+  max-width: 640px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.article-form__title {
+  margin: 0 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.article-form__error {
+  color: var(--mat-sys-error, #b3261e);
+  margin: 0 0 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .article-form {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}

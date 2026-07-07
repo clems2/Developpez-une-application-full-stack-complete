@@ -6,6 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FeedComponent } from './feed.component';
 import { Post } from '../../models/post.model';
+import { provideRouter } from '@angular/router';
 
 describe('FeedComponent', () => {
   let fixture: ComponentFixture<FeedComponent>;
@@ -19,7 +20,7 @@ describe('FeedComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FeedComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FeedComponent);

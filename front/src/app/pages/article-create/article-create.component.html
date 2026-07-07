@@ -1,0 +1,48 @@
+@if (vm(); as v) {
+  <mat-card class="article-form">
+    <h1 class="article-form__title">Créer un article</h1>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Sujet</mat-label>
+        <mat-select formControlName="topicId">
+          @for (topic of subscribedTopics(); track topic.id) {
+            <mat-option [value]="topic.id">{{ topic.title }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.topicId.touched && form.controls.topicId.hasError('required')) {
+          <mat-error>Le sujet est obligatoire.</mat-error>
+        }
+        @if (subscribedTopics().length === 0) {
+          <mat-hint>Abonnez-vous à un sujet pour pouvoir publier un article.</mat-hint>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Titre</mat-label>
+        <input matInput formControlName="title" maxlength="100" />
+        @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+          <mat-error>Le titre est obligatoire.</mat-error>
+        }
+        @if (form.controls.title.hasError('maxlength')) {
+          <mat-error>Le titre ne peut excéder 100 caractères.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contenu</mat-label>
+        <textarea matInput formControlName="content" rows="8"></textarea>
+        @if (form.controls.content.touched && form.controls.content.hasError('required')) {
+          <mat-error>Le contenu est obligatoire.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (v.isError) {
+        <p class="article-form__error" role="alert">{{ v.error }}</p>
+      }
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="v.isLoading">
+        {{ v.isLoading ? 'Publication…' : 'Publier' }}
+      </button>
+    </form>
+  </mat-card>
+}
