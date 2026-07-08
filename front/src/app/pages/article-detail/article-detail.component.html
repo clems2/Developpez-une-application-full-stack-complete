@@ -1,0 +1,42 @@
+@if (vm(); as v) {
+  <div class="detail">
+    <a mat-button routerLink="/feed" class="detail__back">← Retour au fil</a>
+
+    @switch (v.status) {
+      @case ('loading') {
+        <app-spinner label="Chargement de l'article…" />
+      }
+      @case ('error') {
+        <p class="detail__error">Article introuvable ou erreur de chargement.</p>
+      }
+      @default {
+        @if (v.post; as post) {
+          <mat-card class="detail__article">
+            <span class="detail__topic">{{ post.topic }}</span>
+            <h1 class="detail__title">{{ post.title }}</h1>
+            <p class="detail__meta">
+              {{ post.createdAt | date: 'dd/MM/yyyy' }} · {{ post.author }}
+            </p>
+            <p class="detail__content">{{ post.content }}</p>
+          </mat-card>
+
+          <section class="detail__comments">
+            <h2>Commentaires ({{ post.comments.length }})</h2>
+            @if (post.comments.length === 0) {
+              <p class="detail__no-comment">Aucun commentaire pour le moment.</p>
+            } @else {
+              @for (comment of post.comments; track comment.id) {
+                <article class="comment">
+                  <p class="comment__meta">
+                    {{ comment.author }} · {{ comment.createdAt | date: 'dd/MM/yyyy' }}
+                  </p>
+                  <p class="comment__content">{{ comment.content }}</p>
+                </article>
+              }
+            }
+          </section>
+        }
+      }
+    }
+  </div>
+}

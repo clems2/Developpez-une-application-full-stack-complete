@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ArticleCardComponent } from './article-card.component';
 import { Post } from '../../models/post.model';
+import { provideRouter } from '@angular/router';
 
 describe('ArticleCardComponent', () => {
   let fixture: ComponentFixture<ArticleCardComponent>;
@@ -19,6 +20,7 @@ describe('ArticleCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ArticleCardComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ArticleCardComponent);
@@ -44,5 +46,10 @@ describe('ArticleCardComponent', () => {
       .nativeElement as HTMLElement;
     expect(excerpt.textContent?.endsWith('…')).toBe(true);
     expect((excerpt.textContent ?? '').length).toBeLessThan(200);
+  });
+  
+  it('should link to the article detail route', () => {
+    const link = fixture.debugElement.query(By.css('.article-card'));
+    expect(link.attributes['ng-reflect-router-link']).toContain('/articles,1');
   });
 });

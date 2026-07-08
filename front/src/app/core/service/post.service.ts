@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../../models/post.model';
 import { CreatePostRequest } from '../../models/create-post.model';
+import { PostDetail } from '../../models/post-detail.model';
 
 /**
  * Service HTTP des articles : appels bruts à l'API, sans état partagé
@@ -20,5 +21,14 @@ export class PostService {
    */
   create(payload: CreatePostRequest): Observable<Post> {
     return this.http.post<Post>(this.apiUrl, payload);
+  }
+  
+  /**
+   * Récupère le détail d'un article avec ses commentaires.
+   * @param id identifiant de l'article
+   * @returns le détail (200) ; propage 404 si introuvable
+   */
+  getById(id: number): Observable<PostDetail> {
+    return this.http.get<PostDetail>(`${this.apiUrl}/${id}`);
   }
 }

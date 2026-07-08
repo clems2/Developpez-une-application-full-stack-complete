@@ -1,22 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Post } from '../../models/post.model';
 
 /** Longueur maximale de l'extrait affiché dans le fil (caractères). */
 const EXCERPT_MAX = 150;
 
 /**
- * Carte présentationnelle d'un article dans le fil. Pilotée par un `input()` ; aucune
- * logique métier ni accès au store (SRP/DIP). Affiche titre, méta (date/auteur), thème et
- * un extrait tronqué du contenu (le contenu complet vit sur la page détail — slice à venir).
+ * Carte présentationnelle d'un article dans le fil. Pilotée par un `input()` ; aucune logique
+ * métier ni accès au store (SRP/DIP). Cliquable : mène au détail `/articles/:id` (lien
+ * déclaratif, accessible). Affiche titre, méta, thème et un extrait tronqué du contenu.
  */
 @Component({
   selector: 'app-article-card',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="article-card">
+    <article class="article-card" [routerLink]="['/articles', post().id]">
       <header class="article-card__head">
         <h3 class="article-card__title">{{ post().title }}</h3>
         <span class="article-card__topic">{{ post().topic }}</span>
@@ -36,6 +37,11 @@ const EXCERPT_MAX = 150;
         border: 1px solid var(--mat-sys-outline-variant, #ccc);
         border-radius: 8px;
         padding: 1rem;
+        cursor: pointer;
+        transition: box-shadow 0.15s ease;
+      }
+      .article-card:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
       .article-card__head {
         display: flex;

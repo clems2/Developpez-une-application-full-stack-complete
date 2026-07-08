@@ -55,6 +55,13 @@ export const routes: Routes = [
             (m) => m.ArticleCreateComponent,
           ),
       },
+      {
+        path: 'articles/:id',
+        loadComponent: () =>
+          import('./pages/article-detail/article-detail.component').then(
+            (m) => m.ArticleDetailComponent,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
