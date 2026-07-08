@@ -1,16 +1,20 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 
+/**
+ * Configuration applicative (bootstrap standalone). Le routeur lie les paramètres de route
+ * aux `input()` des composants routés (`withComponentInputBinding`). Client HTTP avec
+ * l'intercepteur JWT, animations Material.
+ */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    // L'intercepteur JWT (fonctionnel) sera ajouté dans ce tableau
+    provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
   ],
