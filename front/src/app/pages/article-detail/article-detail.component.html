@@ -22,18 +22,39 @@
 
           <section class="detail__comments">
             <h2>Commentaires ({{ post.comments.length }})</h2>
+
             @if (post.comments.length === 0) {
               <p class="detail__no-comment">Aucun commentaire pour le moment.</p>
             } @else {
-              @for (comment of post.comments; track comment.id) {
-                <article class="comment">
-                  <p class="comment__meta">
-                    {{ comment.author }} · {{ comment.createdAt | date: 'dd/MM/yyyy' }}
-                  </p>
-                  <p class="comment__content">{{ comment.content }}</p>
-                </article>
-              }
+              <div class="comment-list">
+                @for (comment of post.comments; track comment.id) {
+                  <article class="comment">
+                    <p class="comment__meta">
+                      {{ comment.author }} · {{ comment.createdAt | date: 'dd/MM/yyyy' }}
+                    </p>
+                    <p class="comment__content">{{ comment.content }}</p>
+                  </article>
+                }
+              </div>
             }
+
+            <form class="comment-form" [formGroup]="commentForm" (ngSubmit)="submitComment()">
+              <mat-form-field appearance="outline" class="comment-form__field">
+                <mat-label>Ajouter un commentaire</mat-label>
+                <textarea matInput formControlName="content" rows="3" maxlength="1000"></textarea>
+                @if (commentForm.controls.content.touched && commentForm.controls.content.hasError('required')) {
+                  <mat-error>Le commentaire ne peut pas être vide.</mat-error>
+                }
+              </mat-form-field>
+
+              @if (v.commentError) {
+                <p class="detail__error" role="alert">{{ v.commentError }}</p>
+              }
+
+              <button mat-flat-button color="primary" type="submit" [disabled]="v.isSubmittingComment">
+                {{ v.isSubmittingComment ? 'Envoi…' : 'Commenter' }}
+              </button>
+            </form>
           </section>
         }
       }

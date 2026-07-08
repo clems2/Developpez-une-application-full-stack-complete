@@ -64,4 +64,26 @@ describe('ArticleDetailComponent', () => {
 
     expect(fixture.debugElement.query(By.css('.detail__error'))).not.toBeNull();
   });
+
+  // Ajout d'un commentaire : POST puis le commentaire apparaît dans la liste.
+  it('should add a comment and render it', async () => {
+    await setup(7);
+    httpMock.expectOne('/api/posts/7').flush(detail);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    fixture.componentInstance.commentForm.setValue({ content: 'Mon commentaire' });
+    fixture.componentInstance.submitComment();
+
+    httpMock
+      .expectOne('/api/posts/7/comments')
+      .flush({ id: 42, content: 'Mon commentaire', author: 'leo', createdAt: '2026-01-03T10:00:00' });
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('Mon commentaire');
+    expect(text).toContain('Commentaires (2)');
+  });
+  
 });
