@@ -42,8 +42,8 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Article introuvable : " + postId));
         User author = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + username));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + username)); // TODO : ne devrait pas arriver si le token est valide
+        //TODO Controle topic abonné Unauthorized ou forbidden
         Comment comment = new Comment();
         comment.setContent(request.content());
         comment.setPost(post);

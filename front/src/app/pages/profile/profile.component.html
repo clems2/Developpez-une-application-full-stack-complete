@@ -1,0 +1,87 @@
+@if (vm(); as v) {
+  <div class="profile">
+    @switch (v.status) {
+      @case ('loading') {
+        <app-spinner label="Chargement du profil…" />
+      }
+      @case ('error') {
+        <p class="profile__error">Erreur lors du chargement du profil.</p>
+      }
+      @default {
+        @if (v.profile; as profile) {
+          <mat-card class="profile__section">
+            <h1>Mon profil</h1>
+            <form [formGroup]="form" (ngSubmit)="submit()">
+              <mat-form-field appearance="outline">
+                <mat-label>Nom d'utilisateur</mat-label>
+                <input matInput formControlName="username" autocomplete="username" />
+                @if (form.controls.username.touched && form.controls.username.hasError('required')) {
+                  <mat-error>Le nom d'utilisateur est obligatoire.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" autocomplete="email" />
+                @if (form.controls.email.hasError('email')) {
+                  <mat-error>Format d'email invalide.</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Nouveau mot de passe (optionnel)</mat-label>
+                <input matInput type="password" formControlName="password" autocomplete="new-password" />
+                @if (form.controls.password.hasError('passwordPolicy')) {
+                  <mat-error>{{ passwordPolicyMessage }}</mat-error>
+                }
+                <mat-hint>Laissez vide pour ne pas changer le mot de passe.</mat-hint>
+              </mat-form-field>
+
+              @if (v.updateError) {
+                <p class="profile__error" role="alert">{{ v.updateError }}</p>
+              }
+
+              <button
+                mat-flat-button
+                color="primary"
+                type="submit"
+                [disabled]="v.isUpdating || !hasChanges()"
+              >
+                {{ v.isUpdating ? 'Enregistrement…' : 'Enregistrer' }}
+              </button>
+
+              @if (!hasChanges()) {
+                <p class="profile__hint">Aucune modification à enregistrer.</p>
+              } @else {
+                <p class="profile__hint">
+                  Après modification, vous serez déconnecté et devrez vous reconnecter.
+                </p>
+              }
+            </form>
+          </mat-card>
+
+          <mat-card class="profile__section">
+            <h2>Mes abonnements</h2>
+            @if (profile.subscriptions.length === 0) {
+              <p>Vous n'êtes abonné à aucun sujet.</p>
+            } @else {
+              <div class="subscriptions">
+                @for (topic of profile.subscriptions; track topic.id) {
+                  <article class="subscription">
+                    <div class="subscription__info">
+                      <h3 class="subscription__title">{{ topic.title }}</h3>
+                      <p class="subscription__desc">{{ topic.description }}</p>
+                    </div>
+                    <button mat-stroked-button color="warn" (click)="unsubscribe(topic.id)">
+                      Se désabonner
+                    </button>
+                  </article>
+                }
+              </div>
+            }
+          </mat-card>
+        }
+      }
+    }
+  </div>
+}

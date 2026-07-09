@@ -35,7 +35,10 @@ export class LayoutComponent {
   private readonly router = inject(Router);
 
   /** Liens de navigation actuels (progressif : complété au fil des slices). */
-  readonly navLinks: NavLink[] = [{ label: 'Thèmes', path: '/topics' }];
+  readonly navLinks: NavLink[] = [
+    { label: 'Thèmes', path: '/topics' },
+    { label: 'Profil', path: '/me' },
+  ];
 
   /** Déconnecte l'utilisateur (purge token + état) puis renvoie à l'accueil (décision I=a). */
   onLogout(): void {
