@@ -1,5 +1,5 @@
 <header class="header">
-  <a class="header__brand" routerLink="/feed" (click)="closeMenu()">MDD</a>
+  <span class="header__brand">MDD</span>
 
   <!-- Bouton burger : visible en mobile uniquement (CSS) -->
   <button mat-icon-button class="header__burger" type="button"
@@ -15,8 +15,28 @@
          routerLinkActive="header__link--active" (click)="closeMenu()">{{ link.label }}</a>
     }
 
-    <button mat-button class="header__logout" type="button" (click)="onLogout()">
+    <!-- Mobile uniquement : profil et déconnexion regroupés dans le burger -->
+    <button mat-button class="header__mobile-action" type="button" (click)="onProfile()">
+      Mon profil
+    </button>
+    <button mat-button class="header__mobile-action header__logout" type="button" (click)="onLogout()">
       Se déconnecter
     </button>
   </nav>
+
+  <!-- Desktop uniquement : icône utilisateur ouvrant un menu (profil / déconnexion) -->
+  <button mat-icon-button class="header__user" type="button"
+          [matMenuTriggerFor]="userMenu" aria-label="Menu utilisateur">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item type="button" (click)="onProfile()">
+      <mat-icon>person</mat-icon>
+      <span>Mon profil</span>
+    </button>
+    <button mat-menu-item type="button" (click)="onLogout()">
+      <mat-icon>logout</mat-icon>
+      <span>Se déconnecter</span>
+    </button>
+  </mat-menu>
 </header>

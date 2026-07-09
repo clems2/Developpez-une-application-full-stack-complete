@@ -11,7 +11,6 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: #6c5ce7;
-  text-decoration: none;
   letter-spacing: 0.03em;
 }
 
@@ -19,6 +18,7 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  margin-left: auto;
 }
 
 .header__link {
@@ -35,12 +35,18 @@
   color: #b3261e;
 }
 
-/* Burger caché sur desktop */
-.header__burger {
+/* Desktop : icône user visible, actions mobiles cachées, burger caché */
+.header__user {
+  display: inline-flex;
+}
+
+.header__burger,
+.header__mobile-action {
   display: none;
 }
 
-/* Mobile : burger visible, nav repliée en panneau déroulant */
+/* Mobile : burger visible, nav repliée en panneau, icône user cachée
+   (profil et déconnexion sont dans le burger) */
 @media (max-width: 768px) {
   .header {
     flex-wrap: wrap;
@@ -48,6 +54,11 @@
 
   .header__burger {
     display: inline-flex;
+    margin-left: auto;
+  }
+
+  .header__user {
+    display: none;
   }
 
   .header__nav {
@@ -57,9 +68,14 @@
     gap: 1rem;
     width: 100%;
     padding: 1rem 0;
+    margin-left: 0;
   }
 
   .header__nav--open {
     display: flex;
+  }
+
+  .header__mobile-action {
+    display: inline-flex;
   }
 }

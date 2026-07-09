@@ -5,9 +5,8 @@ import { AuthStore } from '../store/auth.store';
 
 /**
  * Layout des écrans connectés : header de navigation + zone de contenu (`router-outlet`
- * enfant). C'est ici que vit la logique de déconnexion (le header, générique, se contente
- * de l'émettre). Les liens sont alimentés **progressivement** : seuls les écrans existants
- * sont câblés ; Articles/profil seront ajoutés à leurs slices respectifs.
+ * enfant). C'est ici que vivent la navigation vers le profil et la logique de déconnexion
+ * (le header, générique, se contente de les émettre).
  */
 @Component({
   selector: 'app-layout',
@@ -15,7 +14,7 @@ import { AuthStore } from '../store/auth.store';
   imports: [RouterOutlet, HeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-header [links]="navLinks" (logout)="onLogout()" />
+    <app-header [links]="navLinks" (profile)="onProfile()" (logout)="onLogout()" />
     <main class="layout__content">
       <router-outlet />
     </main>
@@ -34,13 +33,18 @@ export class LayoutComponent {
   private readonly store = inject(AuthStore);
   private readonly router = inject(Router);
 
-  /** Liens de navigation actuels (progressif : complété au fil des slices). */
+  /** Liens de navigation, conformes aux maquettes (Articles = fil d'actualité). */
   readonly navLinks: NavLink[] = [
+    { label: 'Articles', path: '/feed' },
     { label: 'Thèmes', path: '/topics' },
-    { label: 'Profil', path: '/me' },
   ];
 
-  /** Déconnecte l'utilisateur (purge token + état) puis renvoie à l'accueil (décision I=a). */
+  /** Navigue vers le profil de l'utilisateur. */
+  onProfile(): void {
+    this.router.navigate(['/me']);
+  }
+
+  /** Déconnecte l'utilisateur (purge token + état) puis renvoie à l'accueil. */
   onLogout(): void {
     this.store.logout();
     this.router.navigate(['/']);
