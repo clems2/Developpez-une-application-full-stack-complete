@@ -1,31 +1,13 @@
 /// <reference types="cypress" />
 
-/**
- * Clé de persistance du JWT. DOIT rester alignée sur `TokenStorageService.TOKEN_KEY`.
- * Une divergence ferait échouer toutes les specs authentifiées : c'est le couplage
- * assumé (et unique) entre la suite E2E et le code applicatif.
- */
-export const TOKEN_KEY = 'mdd.auth.token';
-
-/**
- * Jeton factice. `authGuard`, `guestGuard` et `authInterceptor` ne font qu'un contrôle de
- * PRÉSENCE du token (aucun décodage côté front) : une chaîne opaque suffit à simuler une
- * session. Forger un vrai JWT signé n'apporterait rien et coupleraitles tests au secret back.
- */
-export const FAKE_JWT = 'e2e.fake.jwt.token';
-
-/**
- * Sélectionne un élément par son attribut `data-cy`.
- * Découple les tests du texte affiché et des classes internes d'Angular Material.
- */
-Cypress.Commands.add('dataCy', (value: string) => cy.get(`[data-cy="${value}"]`));
+import { FAKE_JWT, TOKEN_KEY } from './constants';
 
 /**
  * Visite une route en simulant une session active.
  *
- * Le token est posé via `onBeforeLoad`, donc AVANT le bootstrap Angular : `authGuard`
- * et le hook `onInit` de `AuthStore` le voient dès la première évaluation. Poser le token
- * après `cy.visit()` serait trop tard (le guard aurait déjà redirigé vers /login).
+ * Le token est posé via `onBeforeLoad`, donc AVANT le bootstrap Angular : `authGuard` et le
+ * hook `onInit` de `AuthStore` le voient dès la première évaluation. Le poser après
+ * `cy.visit()` serait trop tard — le guard aurait déjà redirigé vers /login.
  *
  * @param path  route applicative (ex. '/feed')
  * @param token jeton à injecter (par défaut : jeton factice)
@@ -39,6 +21,26 @@ Cypress.Commands.add('visitAuthenticated', (path: string, token: string = FAKE_J
 );
 
 /**
+ * Saisit une valeur dans un champ Angular Material, désigné par son `formControlName`.
+ *
+ * Le `.focus()` préalable n'est pas cosmétique. Avec `appearance="outline"`, tant que le champ
+ * est vide et non focalisé, le `<mat-label>` recouvre le centre de l'input : `cy.type()` échoue
+ * alors ses contrôles d'actionnabilité (« is being covered by another element »). Le focus fait
+ * remonter le label — c'est la séquence exacte d'un utilisateur qui clique puis tape.
+ *
+ * `.focus()` ne réalisant aucun contrôle d'actionnabilité, on obtient ce résultat SANS recourir
+ * à `{ force: true }`, qui désactiverait aussi la détection des vrais éléments inaccessibles.
+ *
+ * Fonctionne pour `<input>` comme pour `<textarea>`.
+ *
+ * @param formControlName nom du contrôle dans le FormGroup
+ * @param value           valeur à saisir (le champ est vidé au préalable)
+ */
+Cypress.Commands.add('fillInput', (formControlName: string, value: string) => {
+  cy.get(`[formControlName="${formControlName}"]`).focus().clear().type(value);
+});
+
+/**
  * Connecte l'utilisateur en traversant réellement le formulaire de login.
  * Réservé aux specs qui TESTENT le login ; ailleurs, préférer `visitAuthenticated`
  * (plus rapide, et n'ancre pas les autres specs sur l'UI d'authentification).
@@ -48,7 +50,7 @@ Cypress.Commands.add('visitAuthenticated', (path: string, token: string = FAKE_J
  */
 Cypress.Commands.add('loginViaUi', (identifier: string, password: string) => {
   cy.visit('/login');
-  cy.dataCy('login-identifier').type(identifier);
-  cy.dataCy('login-password').type(password);
-  cy.dataCy('login-submit').click();
+  cy.fillInput('identifier', identifier);
+  cy.fillInput('password', password);
+  cy.get('.auth-card button[type="submit"]').click();
 });

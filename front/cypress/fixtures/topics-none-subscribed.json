@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "title": "Java",
+    "description": "Le langage et son écosystème serveur.",
+    "subscribed": false
+  },
+  {
+    "id": 2,
+    "title": "Angular",
+    "description": "Composants, signaux et rendu côté client.",
+    "subscribed": false
+  }
+]

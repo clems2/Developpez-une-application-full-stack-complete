@@ -1,0 +1,18 @@
+[
+  {
+    "id": 10,
+    "title": "Les records en Java 21",
+    "content": "Un record est un porteur de données immuable, concis et sûr.",
+    "author": "alice",
+    "createdAt": "2026-01-20T09:30:00",
+    "topic": "Java"
+  },
+  {
+    "id": 11,
+    "title": "Signal Store en pratique",
+    "content": "withState, withComputed, withMethods : anatomie d'un store réactif.",
+    "author": "bob",
+    "createdAt": "2026-01-05T14:00:00",
+    "topic": "Angular"
+  }
+]
