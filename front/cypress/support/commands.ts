@@ -41,6 +41,33 @@ Cypress.Commands.add('fillInput', (formControlName: string, value: string) => {
 });
 
 /**
+ * Ouvre un `<mat-select>` désigné par son `formControlName` et choisit l'option portant
+ * le libellé donné.
+ *
+ * Deux particularités de Material traitées ici :
+ * 1. le label non flottant recouvre le déclencheur → `.focus()` le fait remonter (même raison
+ *    que `fillInput`, même refus d'utiliser `{ force: true }`) ;
+ * 2. les `<mat-option>` sont projetées dans un **overlay CDK**, à la racine du document et non
+ *    dans le `<mat-select>` → on les cherche sous `.cdk-overlay-pane`.
+ *
+ * @param formControlName nom du contrôle dans le FormGroup
+ * @param optionLabel     texte de l'option à sélectionner
+ */
+Cypress.Commands.add('selectOption', (formControlName: string, optionLabel: string) => {
+  cy.get(`[formControlName="${formControlName}"]`).focus().click();
+  cy.contains('.cdk-overlay-pane mat-option', optionLabel).click();
+});
+
+/**
+ * Ouvre un `<mat-select>` sans rien sélectionner. Utile pour inspecter les options offertes.
+ *
+ * @param formControlName nom du contrôle dans le FormGroup
+ */
+Cypress.Commands.add('openSelect', (formControlName: string) => {
+  cy.get(`[formControlName="${formControlName}"]`).focus().click();
+});
+
+/**
  * Connecte l'utilisateur en traversant réellement le formulaire de login.
  * Réservé aux specs qui TESTENT le login ; ailleurs, préférer `visitAuthenticated`
  * (plus rapide, et n'ancre pas les autres specs sur l'UI d'authentification).

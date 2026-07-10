@@ -1,0 +1,8 @@
+{
+  "id": 12,
+  "title": "Sealed interfaces",
+  "content": "Fermer une hiérarchie pour rendre le pattern matching exhaustif.",
+  "author": "alice",
+  "createdAt": "2026-02-01T10:00:00",
+  "topic": "Java"
+}
