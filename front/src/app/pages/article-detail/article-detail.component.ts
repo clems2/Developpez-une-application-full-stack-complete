@@ -5,8 +5,9 @@ import {
   inject,
   input,
   numberAttribute,
+  viewChild,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -53,6 +54,18 @@ export class ArticleDetailComponent {
     content: ['', [Validators.required, Validators.maxLength(1000)]],
   });
 
+  /**
+   * Directive `[formGroup]` du formulaire de commentaire.
+   *
+   * Nécessaire pour `resetForm()` : Angular Material affiche l'état d'erreur d'un champ dès
+   * que le contrôle est invalide ET que la directive est passée par `submitted` — un drapeau
+   * que ni `reset()` ni `markAsUntouched()` sur le FormGroup ne remettent à zéro. Sans cet
+   * accès, le champ restait rouge après un ajout réussi.
+   *
+   * Optionnelle car le formulaire n'est rendu que lorsque l'article est chargé (`@switch`).
+   */
+  private readonly commentFormDirective = viewChild(FormGroupDirective);
+
   /** Mémorise qu'un envoi était en cours, pour détecter la transition vers le succès. */
   private wasSubmitting = false;
 
@@ -62,14 +75,13 @@ export class ArticleDetailComponent {
       this.store.loadDetail(this.id());
     });
 
-    // Vide le champ UNIQUEMENT après un ajout réussi (transition envoi → succès), en
-    // remettant l'état pristine/untouched pour ne pas rallumer l'erreur "required".
+    // Réinitialise le formulaire UNIQUEMENT après un ajout réussi (transition envoi → succès).
+    // `resetForm()` vide la valeur, repasse pristine/untouched ET annule l'état `submitted` :
+    // c'est le seul appel qui éteint complètement l'état d'erreur du mat-form-field.
     effect(() => {
       const submitting = this.vm().isSubmittingComment;
       if (this.wasSubmitting && !submitting && this.store.commentStatus() === 'loaded') {
-        this.commentForm.reset();
-        this.commentForm.controls.content.markAsUntouched();
-        this.commentForm.controls.content.markAsPristine();
+        this.commentFormDirective()?.resetForm();
       }
       this.wasSubmitting = submitting;
     });
