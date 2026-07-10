@@ -19,11 +19,11 @@ import { ArticleCreateViewModel, initialArticlesState } from '../state/articles.
 function messageForError(error: HttpErrorResponse): string {
   switch (error.status) {
     case 403:
-      return "Vous n'êtes pas abonné à ce sujet.";
+      return "Vous n'êtes pas abonné à ce thème.";
     case 404:
-      return 'Le sujet sélectionné est introuvable.';
+      return 'Le thème sélectionné est introuvable.';
     case 400:
-      return 'Les données de l\'article sont invalides.';
+      return "Les données de l'article sont invalides.";
     default:
       return "La création de l'article a échoué. Réessayez plus tard.";
   }
@@ -33,7 +33,7 @@ function messageForError(error: HttpErrorResponse): string {
  * Feature store des articles (NGRX Signal Store). Porte l'état de la **création** (status/error).
  * Orchestre ; l'appel HTTP est délégué au PostService. La navigation post-succès vit dans la
  * page (un `effect()` réagit au passage à `loaded`), pas ici. La garde d'autorisation « abonné
- * au sujet » est côté back (403) : on la mappe en message, défense en profondeur du filtre front.
+ * au thème » est côté back (403) : on la mappe en message, défense en profondeur du filtre front.
  */
 export const ArticlesStore = signalStore(
   { providedIn: 'root' },
@@ -52,7 +52,7 @@ export const ArticlesStore = signalStore(
   withMethods((store, postService = inject(PostService)) => ({
     /**
      * Crée un article (loading → loaded/error). Sur rejet, mappe le code HTTP en message.
-     * @param payload sujet + titre + contenu
+     * @param payload thème + titre + contenu
      */
     create: rxMethod<CreatePostRequest>(
       pipe(

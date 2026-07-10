@@ -1,24 +1,24 @@
 @if (vm(); as v) {
   <mat-card class="article-form">
-    <h1 class="article-form__title">Créer un article</h1>
+    <h1 class="article-form__title">Créer un nouvel article</h1>
     <form [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline">
-        <mat-label>Sujet</mat-label>
+        <mat-label>Sélectionner un thème</mat-label>
         <mat-select formControlName="topicId">
           @for (topic of subscribedTopics(); track topic.id) {
             <mat-option [value]="topic.id">{{ topic.title }}</mat-option>
           }
         </mat-select>
         @if (form.controls.topicId.touched && form.controls.topicId.hasError('required')) {
-          <mat-error>Le sujet est obligatoire.</mat-error>
+          <mat-error>Le thème est obligatoire.</mat-error>
         }
         @if (subscribedTopics().length === 0) {
-          <mat-hint>Abonnez-vous à un sujet pour pouvoir publier un article.</mat-hint>
+          <mat-hint>Abonnez-vous à un thème pour pouvoir publier un article.</mat-hint>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Titre</mat-label>
+        <mat-label>Titre de l'article</mat-label>
         <input matInput formControlName="title" maxlength="100" />
         @if (form.controls.title.touched && form.controls.title.hasError('required')) {
           <mat-error>Le titre est obligatoire.</mat-error>
@@ -29,7 +29,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Contenu</mat-label>
+        <mat-label>Contenu de l'article</mat-label>
         <textarea matInput formControlName="content" rows="8"></textarea>
         @if (form.controls.content.touched && form.controls.content.hasError('required')) {
           <mat-error>Le contenu est obligatoire.</mat-error>
@@ -41,7 +41,7 @@
       }
 
       <button mat-flat-button color="primary" type="submit" [disabled]="v.isLoading">
-        {{ v.isLoading ? 'Publication…' : 'Publier' }}
+        {{ v.isLoading ? 'Création…' : 'Créer' }}
       </button>
     </form>
   </mat-card>

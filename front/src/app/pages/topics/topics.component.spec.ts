@@ -53,7 +53,7 @@ describe('TopicsComponent', () => {
     fixture.detectChanges();
 
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
-      'Aucun sujet',
+      'Aucun thème',
     );
   });
 

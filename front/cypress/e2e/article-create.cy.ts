@@ -1,13 +1,13 @@
 /**
  * Parcours de création d'un article.
  *
- * Règle métier (correctif tuteur) : un article ne peut être publié que sur un sujet auquel
+ * Règle métier (correctif tuteur) : un article ne peut être publié que sur un thème auquel
  * l'auteur est abonné. Elle est appliquée à deux niveaux — filtre UX du `<mat-select>` côté
  * front, et garde autoritaire côté back (403). Les deux sont couverts ici.
  */
 describe("Création d'un article", () => {
-  // Parcours nominal : seuls les sujets abonnés sont proposés, et le back reçoit le bon corps.
-  it("crée l'article sur un sujet suivi et redirige vers le fil", () => {
+  // Parcours nominal : seuls les thèmes abonnés sont proposés, et le back reçoit le bon corps.
+  it("crée l'article sur un thème suivi et redirige vers le fil", () => {
     cy.intercept({ method: 'GET', pathname: '/api/topics' }, { fixture: 'topics.json' }).as('topics');
     cy.intercept(
       { method: 'POST', pathname: '/api/posts' },
@@ -31,8 +31,8 @@ describe("Création d'un article", () => {
     cy.location('pathname').should('eq', '/feed');
   });
 
-  // Le filtre UX : sur trois sujets renvoyés par l'API, un seul est proposé (le seul suivi).
-  it("ne propose que les sujets auxquels l'utilisateur est abonné", () => {
+  // Le filtre UX : sur trois thèmes renvoyés par l'API, un seul est proposé (le seul suivi).
+  it("ne propose que les thèmes auxquels l'utilisateur est abonné", () => {
     cy.intercept({ method: 'GET', pathname: '/api/topics' }, { fixture: 'topics.json' }).as('topics');
 
     cy.visitAuthenticated('/articles/new');
@@ -45,7 +45,7 @@ describe("Création d'un article", () => {
   });
 
   // Aucun abonnement : l'utilisateur est guidé plutôt que bloqué sans explication.
-  it("invite à s'abonner quand aucun sujet n'est suivi", () => {
+  it("invite à s'abonner quand aucun thème n'est suivi", () => {
     cy.intercept(
       { method: 'GET', pathname: '/api/topics' },
       { fixture: 'topics-none-subscribed.json' },
@@ -54,16 +54,16 @@ describe("Création d'un article", () => {
     cy.visitAuthenticated('/articles/new');
     cy.wait('@topics');
 
-    cy.get('mat-hint').should('contain.text', "Abonnez-vous à un sujet");
+    cy.get('mat-hint').should('contain.text', 'Abonnez-vous à un thème');
   });
 
   /**
-   * Le 403 est INATTEIGNABLE par l'interface, puisque le select filtre déjà les sujets non
+   * Le 403 est INATTEIGNABLE par l'interface, puisque le select filtre déjà les thèmes non
    * suivis. On le provoque par un stub : ce test valide la défense en profondeur du front,
    * c'est-à-dire sa capacité à traduire un refus serveur en message intelligible — par exemple
    * si l'utilisateur se désabonne dans un autre onglet entre le chargement et la publication.
    */
-  it("affiche un message métier quand le back refuse la publication (403)", () => {
+  it('affiche un message métier quand le back refuse la publication (403)', () => {
     cy.intercept({ method: 'GET', pathname: '/api/topics' }, { fixture: 'topics.json' }).as('topics');
     cy.intercept({ method: 'POST', pathname: '/api/posts' }, { statusCode: 403, body: {} }).as('create');
 
@@ -76,7 +76,7 @@ describe("Création d'un article", () => {
     cy.get('.article-form button[type="submit"]').click();
 
     cy.wait('@create');
-    cy.get('.article-form__error').should('contain.text', "Vous n'êtes pas abonné à ce sujet.");
+    cy.get('.article-form__error').should('contain.text', "Vous n'êtes pas abonné à ce thème.");
     cy.location('pathname').should('eq', '/articles/new');
   });
 

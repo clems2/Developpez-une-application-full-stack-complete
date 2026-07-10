@@ -1,5 +1,5 @@
 /**
- * Parcours du fil d'actualité : affichage des articles des sujets suivis, tri par date,
+ * Parcours du fil d'actualité : affichage des articles des thèmes suivis, tri par date,
  * navigation vers le détail, états vide et erreur.
  *
  * Le tri est délégué au back (paramètre `order`) : les assertions portent donc sur la
@@ -25,10 +25,10 @@ describe("Fil d'actualité", () => {
     cy.visitAuthenticated('/feed');
     cy.wait('@feed').its('request.query.order').should('eq', 'desc');
 
-    cy.contains('button', 'Trier par date').click();
+    cy.contains('button', 'Trier par').click();
 
     cy.wait('@feed').its('request.query.order').should('eq', 'asc');
-    cy.contains('button', 'Trier par date').find('mat-icon').should('have.text', 'arrow_upward');
+    cy.contains('button', 'Trier par').find('mat-icon').should('have.text', 'arrow_upward');
   });
 
   // La carte est un lien vers le détail de l'article.
@@ -62,7 +62,7 @@ describe("Fil d'actualité", () => {
   });
 
   // Aucun abonnement : message explicite, pas une liste vide silencieuse.
-  it("affiche un état vide quand l'utilisateur n'est abonné à aucun sujet", () => {
+  it("affiche un état vide quand l'utilisateur n'est abonné à aucun thème", () => {
     cy.intercept({ method: 'GET', pathname: '/api/feed' }, { body: [] }).as('feed');
 
     cy.visitAuthenticated('/feed');

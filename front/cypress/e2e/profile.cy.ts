@@ -25,7 +25,7 @@ describe('Profil', () => {
   });
 
   // Garde `hasChanges()` : aucune requête possible tant que rien n'a changé.
-  it("désactive l'enregistrement tant qu'aucune information n'a changé", () => {
+  it("désactive la sauvegarde tant qu'aucune information n'a changé", () => {
     visitProfile();
 
     cy.get('.profile__section form button[type="submit"]').should('be.disabled');
@@ -85,7 +85,7 @@ describe('Profil', () => {
   });
 
   // Désabonnement : retrait immutable de la liste, sans rechargement du profil.
-  it("désabonne l'utilisateur d'un sujet", () => {
+  it("désabonne l'utilisateur d'un thème", () => {
     visitProfile();
     cy.intercept({ method: 'DELETE', pathname: '/api/topics/1/subscribe' }, { statusCode: 200 }).as(
       'unsubscribe',
@@ -95,7 +95,7 @@ describe('Profil', () => {
 
     cy.wait('@unsubscribe');
     cy.get('.subscription').should('not.exist');
-    cy.contains("Vous n'êtes abonné à aucun sujet.").should('be.visible');
+    cy.contains("Vous n'êtes abonné à aucun thème.").should('be.visible');
 
     // Une seule requête de profil : la liste est mutée en état, pas rechargée.
     cy.get('@profile.all').should('have.length', 1);

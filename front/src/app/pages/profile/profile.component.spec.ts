@@ -107,7 +107,7 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
 
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
-      "Vous n'êtes abonné à aucun sujet.",
+      "Vous n'êtes abonné à aucun thème.",
     );
   });
 });

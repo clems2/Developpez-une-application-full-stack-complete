@@ -10,7 +10,7 @@
       @default {
         @if (v.profile; as profile) {
           <mat-card class="profile__section">
-            <h1>Mon profil</h1>
+            <h1>Profil utilisateur</h1>
             <form [formGroup]="form" (ngSubmit)="submit()">
               <mat-form-field appearance="outline">
                 <mat-label>Nom d'utilisateur</mat-label>
@@ -47,7 +47,7 @@
                 type="submit"
                 [disabled]="v.isUpdating || !hasChanges()"
               >
-                {{ v.isUpdating ? 'Enregistrement…' : 'Enregistrer' }}
+                {{ v.isUpdating ? 'Sauvegarde…' : 'Sauvegarder' }}
               </button>
 
               @if (!hasChanges()) {
@@ -61,9 +61,9 @@
           </mat-card>
 
           <mat-card class="profile__section">
-            <h2>Mes abonnements</h2>
+            <h2>Abonnements</h2>
             @if (profile.subscriptions.length === 0) {
-              <p>Vous n'êtes abonné à aucun sujet.</p>
+              <p>Vous n'êtes abonné à aucun thème.</p>
             } @else {
               <div class="subscriptions">
                 @for (topic of profile.subscriptions; track topic.id) {

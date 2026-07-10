@@ -31,7 +31,7 @@ import { RouterLink } from '@angular/router';
             <a mat-flat-button color="primary" routerLink="/articles/new">Créer un article</a>
             <button mat-stroked-button (click)="toggleOrder(v.order)">
               <mat-icon>{{ v.order === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
-              Trier par date
+              Trier par
             </button>
           </div>
         </header>
