@@ -37,6 +37,12 @@ yarn-error.log
 testem.log
 /typings
 
+# Cypress : artefacts d'exécution, jamais versionnés.
+# Les specs, fixtures et le support le sont.
+/cypress/videos
+/cypress/screenshots
+/cypress/downloads
+
 # System files
 .DS_Store
 Thumbs.db
