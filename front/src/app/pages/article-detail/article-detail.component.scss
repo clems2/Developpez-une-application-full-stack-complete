@@ -19,6 +19,7 @@
 
 .detail__title {
   margin: 0.25rem 0 0.5rem;
+  overflow-wrap: anywhere;
 }
 
 .detail__meta {
@@ -27,9 +28,12 @@
   color: rgba(0, 0, 0, 0.6);
 }
 
+/* `pre-wrap` préserve les retours à la ligne de l'auteur mais ne coupe pas les mots :
+   sans `overflow-wrap`, une URL collée provoquait un défilement horizontal sur mobile. */
 .detail__content {
   margin: 0;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .detail__comments h2 {
@@ -50,6 +54,7 @@
 .comment__content {
   margin: 0;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .comment-list {
@@ -77,6 +82,11 @@
   align-self: flex-start;
 }
 
-.comment-form button {
-  align-self: flex-start;
+/* Sur écran tactile, une zone défilante imbriquée dans le défilement de page capture
+   le doigt. La liste s'étend donc librement et suit le scroll de la page. */
+@media (max-width: 768px) {
+  .comment-list {
+    max-height: none;
+    overflow-y: visible;
+  }
 }

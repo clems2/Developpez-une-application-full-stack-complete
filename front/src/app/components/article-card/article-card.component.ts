@@ -43,14 +43,19 @@ const EXCERPT_MAX = 150;
       .article-card:hover {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
+
+      /* Le repli autorise le thème à passer sous le titre sur une carte étroite. Il garde
+         son white-space nowrap, mais ne comprime plus le titre. */
       .article-card__head {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         align-items: baseline;
-        gap: 1rem;
+        gap: 0.25rem 1rem;
       }
       .article-card__title {
         margin: 0;
+        overflow-wrap: anywhere;
       }
       .article-card__topic {
         font-size: 0.85rem;
@@ -62,8 +67,12 @@ const EXCERPT_MAX = 150;
         font-size: 0.85rem;
         color: rgba(0, 0, 0, 0.6);
       }
+
+      /* Un mot sans espace (URL, identifiant) ne doit pas provoquer de défilement
+         horizontal sur mobile. */
       .article-card__excerpt {
         margin: 0;
+        overflow-wrap: anywhere;
       }
     `,
   ],

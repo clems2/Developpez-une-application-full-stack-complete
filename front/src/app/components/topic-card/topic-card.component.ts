@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Topic } from '../../models/topic.model';
 
 /**
- * Carte présentationnelle d'un sujet. Pilotée par un `input()` ; aucune logique métier ni
+ * Carte présentationnelle d'un thème. Pilotée par un `input()` ; aucune logique métier ni
  * accès au store (SRP/DIP). L'intention d'abonnement est **émise** (`subscribe`) et traitée
  * par la page container. Conforme aux specs : une fois abonné, le bouton devient inactif et
  * affiche « Déjà abonné » (le désabonnement se fait depuis le profil).
@@ -44,10 +44,12 @@ import { Topic } from '../../models/topic.model';
       }
       .topic-card__title {
         margin: 0;
+        overflow-wrap: anywhere;
       }
       .topic-card__description {
         margin: 0;
         flex: 1;
+        overflow-wrap: anywhere;
       }
       .topic-card button {
         align-self: flex-start;
@@ -56,9 +58,9 @@ import { Topic } from '../../models/topic.model';
   ],
 })
 export class TopicCardComponent {
-  /** Sujet à afficher (requis). */
+  /** Thème à afficher (requis). */
   readonly topic = input.required<Topic>();
 
-  /** Émis au clic sur « S'abonner » ; porte l'id du sujet. La page appelle le store. */
+  /** Émis au clic sur « S'abonner » ; porte l'id du thème. La page appelle le store. */
   readonly subscribe = output<number>();
 }

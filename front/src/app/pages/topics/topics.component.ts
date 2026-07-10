@@ -41,10 +41,20 @@ import { SpinnerComponent } from '../../components/spinner/spinner.component';
   `,
   styles: [
     `
+      /* Deux colonnes fixes (maquette desktop). L'ancienne valeur auto-fill avec
+         minmax(280px, 1fr) en produisait trois sur une largeur de 1100px. */
       .topics-list {
         display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+
+      /* Mode compact : même seuil que le header, pour ne pas laisser de bande où le
+         menu serait en burger alors que la grille resterait en deux colonnes. */
+      @media (max-width: 768px) {
+        .topics-list {
+          grid-template-columns: 1fr;
+        }
       }
     `,
   ],

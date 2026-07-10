@@ -60,8 +60,9 @@ import { RouterLink } from '@angular/router';
   `,
   styles: [
     `
+      /* Le fil occupe toute la largeur du contenu : deux colonnes de cartes (maquette). */
       .feed {
-        max-width: 800px;
+        max-width: 1100px;
         margin: 0 auto;
       }
       .feed__head {
@@ -74,19 +75,33 @@ import { RouterLink } from '@angular/router';
       .feed__title {
         margin: 0;
       }
-      .feed__list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
       .feed__actions {
         display: flex;
         gap: 0.75rem;
       }
-      @media (max-width: 480px) {
+      .feed__list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      /* Mode compact (768px) : même seuil que le header, pour ne pas laisser de bande
+         où le menu serait en burger alors que le contenu resterait en deux colonnes. */
+      @media (max-width: 768px) {
         .feed__head {
           flex-direction: column;
           align-items: flex-start;
+        }
+        .feed__list {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Mode téléphone (480px) : les deux actions s'empilent sur toute la largeur. */
+      @media (max-width: 480px) {
+        .feed__actions {
+          flex-direction: column;
+          width: 100%;
         }
       }
     `,
