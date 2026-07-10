@@ -27,3 +27,4 @@ desktop.ini
 # === Divers ===
 *.log
 
+back/src/main/resources/scripts/demo-data.sql
