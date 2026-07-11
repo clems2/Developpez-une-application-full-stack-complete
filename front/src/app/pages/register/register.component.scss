@@ -1,4 +1,4 @@
-/* Identique à login (mise en page auth partagée). Voir note DRY en fin de message. */
+/* Identique à login (mise en page auth partagée). Duplication notée pour la revue technique. */
 .auth-card {
   width: 100%;
   max-width: 420px;
@@ -7,9 +7,6 @@
   box-sizing: border-box;
 }
 
-/* Flèche de retour ancrée en haut à gauche de la carte (maquette). `align-self: flex-start`
-   lui donne sa largeur intrinsèque au lieu de la pleine largeur héritée de la colonne flex ;
-   `min-width: 0` neutralise la largeur minimale que Material impose à ses boutons. */
 .auth-back {
   align-self: flex-start;
   min-width: 0;
@@ -43,6 +40,7 @@ mat-form-field {
 
 @media (max-width: 480px) {
   .auth-card {
+    width: auto;
     max-width: none;
     margin: 1rem;
     padding: 1rem;

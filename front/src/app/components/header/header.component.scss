@@ -21,9 +21,12 @@
   margin-left: auto;
 }
 
+/* Les liens de nav sont des `a mat-button`. On retire la largeur minimale et le padding
+   horizontal que Material impose à ses boutons, pour retrouver un espacement de liens
+   piloté par le `gap` du conteneur. */
 .header__link {
-  text-decoration: none;
-  color: inherit;
+  min-width: 0;
+  padding: 0 0.25rem;
 }
 
 .header__link--active {
@@ -68,7 +71,7 @@
     display: none;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.5rem;
     width: 100%;
     padding: 1rem 0;
     margin-left: 0;

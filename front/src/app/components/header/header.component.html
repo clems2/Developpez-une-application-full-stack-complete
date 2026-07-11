@@ -8,10 +8,13 @@
     <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
   </button>
 
-  <!-- Navigation : en ligne sur desktop, panneau déroulant sur mobile -->
+  <!-- Navigation : en ligne sur desktop, panneau déroulant sur mobile.
+       Les liens sont des `a mat-button` : ils restent des liens (routerLink, accessibles,
+       routerLinkActive) mais portent la typographie Material, uniforme avec les actions
+       profil/déconnexion du menu mobile. -->
   <nav class="header__nav" [class.header__nav--open]="menuOpen()">
     @for (link of links(); track link.path) {
-      <a class="header__link" [routerLink]="link.path"
+      <a mat-button class="header__link" [routerLink]="link.path"
          routerLinkActive="header__link--active" (click)="closeMenu()">{{ link.label }}</a>
     }
 

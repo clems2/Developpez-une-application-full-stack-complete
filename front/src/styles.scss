@@ -18,4 +18,8 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
+  /* Garde-fou : aucun débordement latéral ne doit produire de défilement horizontal sur
+     mobile. Filet de sécurité, pas un cache-misère — les largeurs sont corrigées à la source
+     dans chaque composant. */
+  overflow-x: hidden;
 }

@@ -41,9 +41,13 @@ mat-form-field {
   text-align: center;
 }
 
-/* Mobile : la carte occupe l'écran avec de fines marges, sans coller aux bords */
+/* Mobile : la carte occupe l'écran avec de fines marges. On retire `width: 100%` : combiné
+   aux marges latérales, il produisait une largeur de 100% + 2rem qui débordait le viewport
+   (box-sizing gère le padding, jamais la marge) et créait une barre de défilement horizontale.
+   Sans width fixe, la carte se dimensionne par ses marges — exactement la largeur restante. */
 @media (max-width: 480px) {
   .auth-card {
+    width: auto;
     max-width: none;
     margin: 1rem;
     padding: 1rem;
