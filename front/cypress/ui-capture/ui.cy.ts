@@ -111,7 +111,7 @@ VIEWPORTS.forEach((viewport) => {
         cy.visitAuthenticated('/feed');
         cy.wait('@feed');
         cy.get('.header__burger').click();
-        cy.get('.header__nav--open').should('be.visible');
+        cy.get('.header__panel--open').should('be.visible');
         shoot('09-menu-burger', viewport);
       });
     }

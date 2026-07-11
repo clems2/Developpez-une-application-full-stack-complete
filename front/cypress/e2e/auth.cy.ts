@@ -131,15 +131,15 @@ describe('Authentification', () => {
   });
 
   describe('Déconnexion', () => {
-    // Le menu utilisateur (desktop) purge le token et renvoie à l'accueil.
+    // Chemin desktop : l'icône utilisateur ouvre un mat-menu (overlay CDK) contenant
+    // « Se déconnecter ». Le viewport par défaut de la suite (1280px) est en mode desktop,
+    // donc le panneau latéral mobile n'entre pas en jeu ici.
     it("purge le token et renvoie à l'accueil", () => {
       cy.intercept({ method: 'GET', pathname: '/api/feed' }, { statusCode: 200, body: [] }).as('feed');
 
       cy.visitAuthenticated('/feed');
       cy.wait('@feed');
 
-      // Les actions mobiles existent dans le DOM mais sont masquées en CSS sur desktop :
-      // on passe donc par l'overlay du mat-menu, seul rendu cliquable ici.
       cy.get('.header__user').click();
       cy.get('.mat-mdc-menu-panel').contains('Se déconnecter').click();
 

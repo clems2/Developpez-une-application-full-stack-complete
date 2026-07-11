@@ -28,7 +28,11 @@
                 }
               </mat-form-field>
 
-              <mat-form-field appearance="outline">
+              <!-- subscriptSizing="dynamic" : la zone sous le champ s'adapte à la hauteur réelle
+                   du hint. Sur mobile, « Laissez vide… » passe sur deux lignes ; sans cette
+                   option, la zone reste calibrée pour une ligne et la seconde chevauchait le
+                   bouton. Appliqué au seul champ porteur d'un hint long. -->
+              <mat-form-field appearance="outline" subscriptSizing="dynamic">
                 <mat-label>Nouveau mot de passe (optionnel)</mat-label>
                 <input matInput type="password" formControlName="password" autocomplete="new-password" />
                 @if (form.controls.password.hasError('passwordPolicy')) {

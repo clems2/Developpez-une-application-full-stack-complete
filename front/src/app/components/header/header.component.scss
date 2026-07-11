@@ -14,7 +14,7 @@
   letter-spacing: 0.03em;
 }
 
-.header__nav {
+.header__nav-desktop {
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -22,8 +22,7 @@
 }
 
 /* Les liens de nav sont des `a mat-button`. On retire la largeur minimale et le padding
-   horizontal que Material impose à ses boutons, pour retrouver un espacement de liens
-   piloté par le `gap` du conteneur. */
+   horizontal que Material impose à ses boutons, pour un espacement piloté par le `gap`. */
 .header__link {
   min-width: 0;
   padding: 0 0.25rem;
@@ -38,50 +37,81 @@
   color: #b3261e;
 }
 
-/* Desktop : icône user visible, actions mobiles cachées, burger caché.
-   Pas de flex-wrap ici : en desktop la barre tient sur une seule ligne, et autoriser
-   le repli renvoyait l'icône user sur une ligne fantôme lors des captures fullPage. */
 .header__user {
   display: inline-flex;
 }
 
+/* Éléments réservés au mobile : cachés en desktop. */
 .header__burger,
-.header__mobile-action {
+.header__backdrop,
+.header__panel {
   display: none;
 }
 
-/* Mobile : burger visible, nav repliée en panneau, icône user cachée
-   (profil et déconnexion sont dans le burger). Le flex-wrap ne sert QUE dans ce mode,
-   pour que la nav dépliée passe sous la ligne du logo + burger. */
+/* --- Mode compact (768px) : burger + panneau latéral --- */
 @media (max-width: 768px) {
-  .header {
-    flex-wrap: wrap;
-  }
-
   .header__burger {
     display: inline-flex;
     margin-left: auto;
   }
 
+  /* Desktop nav et icône user disparaissent : tout passe dans le panneau. */
+  .header__nav-desktop,
   .header__user {
     display: none;
   }
 
-  .header__nav {
-    display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 1rem 0;
-    margin-left: 0;
+  /* Fond assombri couvrant tout le viewport, sous le panneau. */
+  .header__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
   }
 
-  .header__nav--open {
+  /* Panneau glissant depuis la droite, pleine hauteur, par-dessus le contenu. Toujours
+     rendu (display flex) ; masqué hors écran par translateX, révélé par --open. */
+  .header__panel {
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 75%;
+    max-width: 300px;
+    padding: 1rem;
+    box-sizing: border-box;
+    background: var(--mat-sys-surface, #fff);
+    box-shadow: -2px 0 12px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
   }
 
-  .header__mobile-action {
-    display: inline-flex;
+  .header__panel--open {
+    transform: translateX(0);
+  }
+
+  /* Bouton de fermeture aligné à droite, en haut du panneau. */
+  .header__panel-close {
+    align-self: flex-end;
+  }
+
+  /* Entrées du panneau : alignées à gauche, pleine largeur, typographie Material uniforme. */
+  .header__panel-link {
+    justify-content: flex-start;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* Respecte la préférence système de mouvement réduit : pas d'animation de glissement. */
+@media (prefers-reduced-motion: reduce) {
+  .header__panel {
+    transition: none;
   }
 }

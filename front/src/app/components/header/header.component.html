@@ -8,23 +8,12 @@
     <mat-icon>{{ menuOpen() ? 'close' : 'menu' }}</mat-icon>
   </button>
 
-  <!-- Navigation : en ligne sur desktop, panneau déroulant sur mobile.
-       Les liens sont des `a mat-button` : ils restent des liens (routerLink, accessibles,
-       routerLinkActive) mais portent la typographie Material, uniforme avec les actions
-       profil/déconnexion du menu mobile. -->
-  <nav class="header__nav" [class.header__nav--open]="menuOpen()">
+  <!-- Desktop : liens en ligne. Les mêmes liens servent aussi au panneau mobile ci-dessous. -->
+  <nav class="header__nav-desktop">
     @for (link of links(); track link.path) {
       <a mat-button class="header__link" [routerLink]="link.path"
-         routerLinkActive="header__link--active" (click)="closeMenu()">{{ link.label }}</a>
+         routerLinkActive="header__link--active">{{ link.label }}</a>
     }
-
-    <!-- Mobile uniquement : profil et déconnexion regroupés dans le burger -->
-    <button mat-button class="header__mobile-action" type="button" (click)="onProfile()">
-      Mon profil
-    </button>
-    <button mat-button class="header__mobile-action header__logout" type="button" (click)="onLogout()">
-      Se déconnecter
-    </button>
   </nav>
 
   <!-- Desktop uniquement : icône utilisateur ouvrant un menu (profil / déconnexion) -->
@@ -43,3 +32,38 @@
     </button>
   </mat-menu>
 </header>
+
+<!-- Fond assombri : présent uniquement quand le panneau est ouvert, ferme au clic. -->
+@if (menuOpen()) {
+  <div class="header__backdrop" (click)="closeMenu()" aria-hidden="true"></div>
+}
+
+<!-- Panneau latéral mobile : glisse depuis la droite. Contient navigation + profil +
+     déconnexion. Toujours dans le DOM (l'animation de translation joue à l'ouverture) ;
+     rendu inerte pour les lecteurs d'écran quand il est fermé. -->
+<nav
+  class="header__panel"
+  [class.header__panel--open]="menuOpen()"
+  [attr.aria-hidden]="!menuOpen()"
+  [attr.inert]="menuOpen() ? null : ''"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu de navigation"
+>
+  <button mat-icon-button class="header__panel-close" type="button"
+          aria-label="Fermer le menu" (click)="closeMenu()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  @for (link of links(); track link.path) {
+    <a mat-button class="header__panel-link" [routerLink]="link.path"
+       routerLinkActive="header__link--active" (click)="closeMenu()">{{ link.label }}</a>
+  }
+
+  <button mat-button class="header__panel-link" type="button" (click)="onProfile()">
+    Mon profil
+  </button>
+  <button mat-button class="header__panel-link header__logout" type="button" (click)="onLogout()">
+    Se déconnecter
+  </button>
+</nav>
