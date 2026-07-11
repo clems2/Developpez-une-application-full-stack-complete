@@ -1,0 +1,34 @@
+[
+  {
+    "id": 10,
+    "title": "Les records en Java 21",
+    "content": "Un record est un porteur de données immuable, concis et sûr. Le compilateur génère le constructeur canonique, les accesseurs, equals, hashCode et toString.",
+    "author": "alice",
+    "createdAt": "2026-01-20T09:30:00",
+    "topic": "Java"
+  },
+  {
+    "id": 11,
+    "title": "Signal Store en pratique",
+    "content": "withState, withComputed, withMethods : anatomie d'un store réactif sans boilerplate, où le view-model dérive de l'état plutôt que de le dupliquer.",
+    "author": "bob",
+    "createdAt": "2026-01-18T14:00:00",
+    "topic": "Angular"
+  },
+  {
+    "id": 12,
+    "title": "Migrations versionnées avec Flyway",
+    "content": "Placer le schéma sous contrôle de version supprime la dérive entre les environnements. Une migration appliquée ne se modifie jamais : son empreinte est vérifiée au démarrage.",
+    "author": "carla",
+    "createdAt": "2026-01-12T11:15:00",
+    "topic": "DevOps"
+  },
+  {
+    "id": 13,
+    "title": "Prévenir le N+1 avec JOIN FETCH",
+    "content": "Charger une collection paresseuse dans une boucle multiplie les requêtes. Un JOIN FETCH ramène l'agrégat en une seule passe, à condition de désactiver open-in-view.",
+    "author": "alice",
+    "createdAt": "2026-01-05T08:45:00",
+    "topic": "Java"
+  }
+]

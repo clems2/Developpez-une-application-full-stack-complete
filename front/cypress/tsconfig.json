@@ -7,5 +7,5 @@
     "sourceMap": false,
     "types": ["cypress", "node"]
   },
-  "include": ["**/*.ts", "../cypress.config.ts"]
+  "include": ["**/*.ts", "../cypress.config.ts", "../cypress.screenshots.config.ts"]
 }

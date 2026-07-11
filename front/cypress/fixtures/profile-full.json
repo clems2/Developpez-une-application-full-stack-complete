@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "username": "alice",
+  "email": "alice@mdd.test",
+  "subscriptions": [
+    {
+      "id": 1,
+      "title": "Java",
+      "description": "Le langage et son écosystème serveur.",
+      "subscribed": true
+    },
+    {
+      "id": 3,
+      "title": "DevOps",
+      "description": "Intégration et déploiement continus.",
+      "subscribed": true
+    }
+  ]
+}

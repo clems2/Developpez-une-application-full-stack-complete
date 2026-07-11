@@ -11,7 +11,10 @@
     "test:cov": "jest --coverage",
     "e2e:open": "cypress open --e2e",
     "e2e": "cypress run",
-    "e2e:ci": "start-server-and-test start http://localhost:4200 e2e"
+    "e2e:ci": "start-server-and-test start http://localhost:4200 e2e",
+    "e2e:typecheck": "tsc -p cypress/tsconfig.json",
+    "capture:ui": "cypress run --config-file cypress.screenshots.config.ts",
+    "capture:ui:ci": "start-server-and-test start http://localhost:4200 capture:ui"
   },
   "private": true,
   "dependencies": {
@@ -36,7 +39,7 @@
     "@angular/cli": "^19.2.24",
     "@angular/compiler-cli": "^19.2.0",
     "@types/jest": "^29.5.14",
-    "cypress": "^14.0.0",
+    "cypress": "^14.5.4",
     "jest": "^29.7.0",
     "jest-preset-angular": "^14.6.0",
     "start-server-and-test": "^2.0.0",
