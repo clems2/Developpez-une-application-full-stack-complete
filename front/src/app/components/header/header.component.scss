@@ -35,7 +35,9 @@
   color: #b3261e;
 }
 
-/* Desktop : icône user visible, actions mobiles cachées, burger caché */
+/* Desktop : icône user visible, actions mobiles cachées, burger caché.
+   Pas de flex-wrap ici : en desktop la barre tient sur une seule ligne, et autoriser
+   le repli renvoyait l'icône user sur une ligne fantôme lors des captures fullPage. */
 .header__user {
   display: inline-flex;
 }
@@ -46,7 +48,8 @@
 }
 
 /* Mobile : burger visible, nav repliée en panneau, icône user cachée
-   (profil et déconnexion sont dans le burger) */
+   (profil et déconnexion sont dans le burger). Le flex-wrap ne sert QUE dans ce mode,
+   pour que la nav dépliée passe sous la ligne du logo + burger. */
 @media (max-width: 768px) {
   .header {
     flex-wrap: wrap;
