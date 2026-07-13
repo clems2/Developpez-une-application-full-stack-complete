@@ -11,7 +11,6 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
 import { PostService } from '../core/service/post.service';
-import { Post } from '../models/post.model';
 import { CreatePostRequest } from '../models/create-post.model';
 import { ArticleCreateViewModel, initialArticlesState } from '../state/articles.state';
 
@@ -60,7 +59,7 @@ export const ArticlesStore = signalStore(
         switchMap((payload) =>
           postService.create(payload).pipe(
             tapResponse({
-              next: (_created: Post) =>
+              next: () =>
                 patchState(store, { status: 'loaded', error: null }),
               error: (error: HttpErrorResponse) =>
                 patchState(store, { status: 'error', error: messageForError(error) }),
