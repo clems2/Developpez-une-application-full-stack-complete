@@ -13,10 +13,13 @@ spring:
       # le construit (db/migration). Au démarrage, Hibernate vérifie seulement que
       # les entités correspondent au schéma migré et plante sinon (garde-fou).
       ddl-auto: validate
-    show-sql: true
+    # show-sql désactivé par défaut : en production, journaliser chaque requête SQL
+    # exposerait les paramètres (dont le hash de mot de passe sur les INSERT/UPDATE users).
+    # Activable en développement via SHOW_SQL=true dans l'environnement local.
+    show-sql: ${SHOW_SQL:false}
     properties:
       hibernate:
-        format_sql: true
+        format_sql: ${SHOW_SQL:false}
   flyway:
     # Actif par défaut en dev/prod ; exécute db/migration au démarrage.
     enabled: true
