@@ -7,6 +7,9 @@ import { AuthStore } from '../store/auth.store';
  * Layout des écrans connectés : header de navigation + zone de contenu (`router-outlet`
  * enfant). C'est ici que vivent la navigation vers le profil et la logique de déconnexion
  * (le header, générique, se contente de les émettre).
+ *
+ * La balise <main> est portée par AppComponent (racine), pas ici : cela garantit un unique
+ * landmark <main> sur toutes les pages, connectées ou non (exigence d'accessibilité).
  */
 @Component({
   selector: 'app-layout',
@@ -15,9 +18,9 @@ import { AuthStore } from '../store/auth.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-header [links]="navLinks" (profile)="onProfile()" (logout)="onLogout()" />
-    <main class="layout__content">
+    <div class="layout__content">
       <router-outlet />
-    </main>
+    </div>
   `,
   styles: [
     `
