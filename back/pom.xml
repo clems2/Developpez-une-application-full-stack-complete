@@ -223,6 +223,35 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
+              SpotBugs : analyse statique du bytecode (détection de bugs potentiels).
+              Lié à la phase `verify` (après les tests) : le build échoue si un nouveau bug
+              non filtré apparaît. Filet permanent, au même titre que le gate JaCoCo.
+              Les faux positifs structurels (Spring/Lombok/JPA) sont filtrés via
+              spotbugs-exclude.xml. `spotbugs:gui` reste disponible pour explorer un rapport.
+            -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.8.6.6</version>
+                <configuration>
+                    <!-- effort max : analyse la plus poussée -->
+                    <effort>Max</effort>
+                    <!-- Low = remonte tout, même les avertissements mineurs -->
+                    <threshold>Low</threshold>
+                    <!-- fichier d'exclusion des faux positifs connus -->
+                    <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotbugs-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

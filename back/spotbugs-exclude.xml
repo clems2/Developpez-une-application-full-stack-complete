@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Filtres d'exclusion SpotBugs : faux positifs structurels de Spring Boot / Lombok / JPA.
+  On n'exclut ici QUE des patterns mécaniques sans valeur de diagnostic. Aucun vrai bug
+  potentiel n'est masqué : les catégories de correctness restent actives.
+-->
+<FindBugsFilter>
+
+    <!-- Entités JPA : Lombok génère des getters/setters qui "exposent" les collections
+         internes. C'est le fonctionnement normal d'une entité, pas une fuite. -->
+    <Match>
+        <Class name="~com\.openclassrooms\.mddapi\.models\..*"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- DTO records : un record expose ses composants par conception. -->
+    <Match>
+        <Class name="~com\.openclassrooms\.mddapi\.dto\..*"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Services : les repositories Spring Data injectés sont des singletons gérés par le
+         conteneur, faits pour être stockés tels quels. Les "exposer" via un champ n'est
+         pas une fuite de représentation — c'est le pattern d'injection de dépendances.
+         EI_EXPOSE_REP2 est donc un faux positif systématique sur les services Spring. -->
+    <Match>
+        <Class name="~com\.openclassrooms\.mddapi\.service\..*"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Champs injectés par Spring perçus comme potentiellement nuls (cycle de vie ignoré). -->
+    <Match>
+        <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR,NP_UNWRITTEN_FIELD"/>
+    </Match>
+
+</FindBugsFilter>

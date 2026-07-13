@@ -18,7 +18,7 @@ import java.util.Date;
  * ne révoque pas un JWT stateless : compromis MVP assumé (pas de mécanisme de révocation).
  */
 @Component
-public class JwtUtil {
+public final class JwtUtil {
 
     private final SecretKey signingKey;
     private final long expirationMs;
