@@ -71,6 +71,14 @@ describe('HeaderComponent', () => {
     expect(component.menuOpen()).toBe(true);
   });
 
+  // toggleMenu referme aussi (branche open => !open dans le sens true → false).
+  it('should toggle the mobile menu back to closed', () => {
+    component.toggleMenu();
+    expect(component.menuOpen()).toBe(true);
+    component.toggleMenu();
+    expect(component.menuOpen()).toBe(false);
+  });
+
   // Après une action, le menu mobile se referme.
   it('should close the menu on profile or logout', () => {
     component.toggleMenu();
@@ -85,5 +93,48 @@ describe('HeaderComponent', () => {
   // L'icône utilisateur (desktop) déclenche le menu Material.
   it('should expose a user menu trigger', () => {
     expect(fixture.debugElement.query(By.css('.header__user'))).not.toBeNull();
+  });
+
+  // Échap ferme le panneau quand il est ouvert (branche menuOpen() vraie).
+  it('should close the menu on Escape when it is open', () => {
+    component.toggleMenu();
+    expect(component.menuOpen()).toBe(true);
+
+    component.onEscape();
+
+    expect(component.menuOpen()).toBe(false);
+  });
+
+  // Échap ne fait rien quand le panneau est déjà fermé (branche menuOpen() fausse).
+  it('should do nothing on Escape when the menu is already closed', () => {
+    expect(component.menuOpen()).toBe(false);
+
+    component.onEscape();
+
+    expect(component.menuOpen()).toBe(false);
+  });
+
+  // L'effect bloque le défilement du body à l'ouverture, le restaure à la fermeture.
+  it('should lock body scroll when open and restore it when closed', () => {
+    // Ouverture : overflow passe à hidden.
+    component.toggleMenu();
+    fixture.detectChanges();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    // Fermeture : overflow restauré (chaîne vide).
+    component.closeMenu();
+    fixture.detectChanges();
+    expect(document.body.style.overflow).toBe('');
+  });
+
+  // Échap via l'événement clavier réel (couvre le HostListener, pas seulement la méthode).
+  it('should close the menu on a real Escape keydown event', () => {
+    component.toggleMenu();
+    fixture.detectChanges();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+
+    expect(component.menuOpen()).toBe(false);
   });
 });
